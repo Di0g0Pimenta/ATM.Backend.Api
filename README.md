@@ -1,259 +1,70 @@
-# ATM.Backend.Api
+# ATM.Backend.Api (Sistema Multibanco com Autenticação)
 
-REST API developed in ASP.NET Core to support an ATM banking system with complete financial operations.
+Este projeto implementa o backend de um sistema ATM (Multibanco) utilizando .NET 8, Entity Framework Core e SQL Server. O projeto foi estruturado seguindo boas práticas de POO e arquitetura limpa, e está dockerizado para facilidade de execução.
 
-## 📋 Project Overview
+## 🚀 Como Executar o Projeto
 
-Academic project for Object-Oriented Programming course, implementing a complete ATM system with authentication, banking operations, and transaction management.
+### Pré-requisitos
+*   **Recomendado**: Docker Desktop instalado.
+*   **Alternativa (Local)**: .NET 8 SDK e SQL Server LocalDB instalados.
 
-## ✅ Implementation Checklist
+### Opção 1: Executando com Docker (Recomendado)
+Esta opção sobe a API e o Banco de Dados automaticamente em containers isolados.
 
-### **MANDATORY REQUIREMENTS (50%)**
-
-#### **1. Core Entities & Relationships**
-- [ ] **Bank** entity
-- [ ] **Client** entity
-- [ ] **Account** entity
-- [ ] **Card** entity
-- [ ] **Transaction/Movement** entity
-- [ ] Relationships implemented:
-  - [ ] Multiple Banks exist in system
-  - [ ] Clients can have Accounts in multiple Banks
-  - [ ] Each Account has multiple Cards
-  - [ ] Each Card has a list of Movements/Transactions
-
-#### **2. Essential Banking Operations**
-
-**2.1 Check Balance**
-- [ ] Load balance from database
-- [ ] Load movements/transactions from database
-- [ ] Display balance in UI after login
-
-**2.2 Withdraw Money**
-- [ ] Validate numeric and positive input
-- [ ] Check sufficient balance
-- [ ] Create transaction record in database
-- [ ] Update account balance in database
-- [ ] Display confirmation message
-
-**2.3 Deposit Money**
-- [ ] Validate numeric and positive input
-- [ ] Update client balance
-- [ ] Register operation in database
-- [ ] Display confirmation message
-
-**2.4 Transaction History**
-- [ ] Display complete list of client movements
-- [ ] Implement filtering options
-- [ ] Show transaction details (date, type, amount)
-
-#### **3. Technical Requirements**
-
-**3.1 Object-Oriented Programming (OOP)**
-- [ ] Separate classes for each entity:
-  - [ ] Account class
-  - [ ] Movement/Transaction class
-  - [ ] Client class
-  - [ ] Bank class
-- [ ] **Encapsulation** properly implemented
-- [ ] **Inheritance** implemented (minimum 1 case)
-  - [ ] Example: Operation → Withdrawal / Deposit / Transfer
-- [ ] **Polymorphism** applied to operations
-
-**3.2 Database Access**
-- [ ] SQL Server connection configured
-- [ ] All entities persisted in database
-- [ ] CRUD operations for all entities
-- [ ] Transaction management implemented
-
-**3.3 Security & Validation**
-- [ ] Prevent negative values
-- [ ] Prevent non-numeric characters
-- [ ] Appropriate error messages
-- [ ] Exception handling throughout application
-- [ ] Secure credential validation
-
----
-
-### **ADDITIONAL FEATURES (Choose to implement)**
-
-#### **4. Advanced Functionalities**
-- [ ] **Transfers**
-  - [ ] Between different banks
-  - [ ] Between accounts in same bank
-  - [ ] Transfer history
-- [ ] **Bill Payments** simulation
-  - [ ] Water bills
-  - [ ] Electricity bills
-  - [ ] Phone bills
-  - [ ] Other services
-- [ ] **Improved UI**
-  - [ ] Modern interface design
-  - [ ] Responsive layout
-  - [ ] User-friendly navigation
-- [ ] **Dashboard with charts**
-  - [ ] Spending analytics
-  - [ ] Income vs expenses
-  - [ ] Category breakdowns
-- [ ] **Daily withdrawal limits**
-  - [ ] Configurable limits per account
-  - [ ] Limit tracking
-  - [ ] Alert system
-
----
-
-### **EVALUATION CRITERIA (50%)**
-
-#### **1. Creativity & Innovation**
-- [ ] Original solutions proposed
-- [ ] UI improvements beyond minimum requirements
-- [ ] New useful features not specified in requirements
-- [ ] Innovative approach to problems
-
-#### **2. Autonomy & Initiative**
-- [ ] Features implemented autonomously
-- [ ] Additional classes created appropriately
-- [ ] Problem-solving without detailed instructions
-- [ ] Proactive improvements
-
-#### **3. Relevance & Conceptual Depth**
-- [ ] Proper relationships between entities documented
-- [ ] Inheritance hierarchy explained
-- [ ] Polymorphism usage justified
-- [ ] Architectural decisions documented
-
-#### **4. Collaboration & Collective Thinking**
-- [ ] Group discussions documented (if applicable)
-- [ ] Collaborative problem-solving evidenced
-- [ ] Contributions acknowledged
-
-#### **5. Analytical Thinking & Problem Solving**
-- [ ] Complex validations implemented
-- [ ] Balance checks working correctly
-- [ ] Limit validations functioning
-- [ ] Database error handling
-- [ ] SQL transactions managed properly
-- [ ] Efficient operation logic
-
-#### **6. Use of AI Tools (Ethical & Reflective)**
-- [ ] AI tools used responsibly
-- [ ] AI assistance cited in report
-- [ ] Generated code understood and explained
-- [ ] Manual adjustments documented
-- [ ] No copy-paste approach
-
-#### **7. Self-Learning & Knowledge Expansion**
-- [ ] Research beyond class material
-- [ ] New libraries/patterns explored
-- [ ] Advanced SQL Server features used
-- [ ] Application expanded beyond minimum
-
-#### **8. Communication & Explanation**
-- [ ] Clear model explanation in report
-- [ ] Decisions justified
-- [ ] Logical application demonstration
-- [ ] Clean code documentation
-
-#### **9. Impact & Contribution**
-- [ ] Stable application functionality
-- [ ] Significant improvements to base core
-- [ ] Added value to ATM ecosystem
-
-#### **10. Comprehensive Report/Artifact**
-- [ ] Professional structure
-- [ ] Class architecture described
-- [ ] Functional flows explained
-- [ ] Screenshots included
-- [ ] Difficulties and solutions documented
-
----
-
-## 📦 Deliverables
-
-### **Required Submissions**
-1. **Source Code**
-   - [ ] Well-structured and organized
-   - [ ] Commented appropriately
-   - [ ] Follows coding conventions
-
-2. **SQL Script**
-   - [ ] Database creation script
-   - [ ] Table definitions
-   - [ ] Sample data (optional)
-   - [ ] Relationships and constraints
-
-3. **Technical Report**
-   - [ ] Class explanations
-   - [ ] Architecture overview
-   - [ ] Decision justifications
-   - [ ] Application screenshots
-   - [ ] UML diagrams (optional)
-   - [ ] Challenges faced and solutions
-
-4. **Final Presentation/Defense**
-   - [ ] 15-minute demonstration prepared
-   - [ ] Live demo ready
-   - [ ] Q&A preparation
-
----
-
-## 🛠️ Technologies
-
-- **Backend**: ASP.NET Core Web API
-- **Database**: SQL Server (or SQLite planned)
-- **Documentation**: Swagger (OpenAPI)
-- **Version Control**: GitHub
-- **Additional**: (add as implemented)
-
-## 🏗️ Architecture
-
-```
-ATM.Backend.Api/
-├── Controllers/          # API endpoints
-├── Services/            # Business logic
-├── Repositories/        # Data access layer
-├── Models/             # Entity models
-├── DTOs/               # Data transfer objects
-├── Database/           # DB context & migrations
-└── Utilities/          # Helper classes
+**Primeira vez e subsequentes:**
+Abra o terminal na pasta raiz do projeto e execute:
+```bash
+docker-compose up --build -d
 ```
 
-## 📊 Database Schema
+*   **Acesse o Swagger UI**: [http://localhost:8080/swagger](http://localhost:8080/swagger)
+*   **Parar execução**: `docker-compose down`
 
-### Core Tables Required
-- **Banks** - Bank information
-- **Clients** - Customer data
-- **Accounts** - Account details
-- **Cards** - ATM card information
-- **Movements** - Transaction history
-
-## 📝 API Documentation
-
-Access Swagger UI at: `https://localhost:5001/swagger` (after running, not Working)
+### Opção 2: Executando Localmente (Visual Studio)
+1.  Abra o arquivo `ATM.Backend.Api.sln` no Visual Studio.
+2.  Altere a Connection String em `appsettings.json` para apontar para seu SQL Server local.
+3.  Execute o comando `update-database` no Package Manager Console para criar o banco.
+4.  Pressione `F5` para iniciar o projeto.
 
 ---
 
-## 👨‍💻 Author
+## ✅ Checklist de Requisitos - Projeto Final POO
+Abaixo está o status atual do desenvolvimento em relação aos objetivos do projeto final.
 
-**Diogo Pimenta**,
-**José Soares**,
-**João Borges**,
-**Olavo**
-- Academic project for Object-Oriented Programming course
-- GitHub: [@Di0g0Pimenta](https://github.com/Di0g0Pimenta)
+### 1. Objetivos Gerais
+- [x] **Aplicação dos princípios de POO**: Projeto refatorado com herança (`Model`), encapsulamento (propriedades `private set` onde aplicável) e abstração (`IRepository`).
+- [ ] **Persistência dos movimentos**: O banco salva Clientes, Contas e Cartões, mas a tabela de Movimentos ainda não foi criada.
 
----
+### 2. Requisitos Funcionais
+#### 2.1 Consultar Saldo
+- [x] **Estrutura de Dados**: Campo `Balance` existe na classe `Account`.
 
-## 📄 License
+#### 2.2 Levantar Dinheiro (Pick-up Money)
+- [x] **Lógica Básica**: Métodos `Debit` na classe `Account` verificam saldo.
+- [ ] **Registo de Movimento**: Falta criar entidade `Movement` e salvar o registo da operação no banco.
 
-This is an academic project. All rights reserved.
+#### 2.3 Depositar Dinheiro (Store Money)
+- [x] **Lógica Básica**: Métodos `Deposit` na classe `Account`.
+- [ ] **Registo de Movimento**: Falta criar entidade `Movement` e registrar.
 
----
+#### 2.4 Listagem de Movimentos
+- [ ] **Histórico**: Falta implementar a entidade `Movement` e o endpoint/visualização para listar o histórico.
 
-## 📌 Notes
+### 3. Requisitos Técnicos
+#### 3.1 POO
+- [x] **Classes Base**: `Conta` (Account), `Cliente` (Client), `Cartão` (Card) implementadas.
+- [ ] **Classes Faltantes**: `Movimento`, `Banco` (se for multi-banco real).
+- [ ] **Polimorfismo nas Operações**: Implementar classes derivadas para operações (ex: `Levantamento : Operacao`) para cumprir o requisito de polimorfismo.
 
-- This project is being developed as part of an academic assignment
-- Regular commits and proper version control are essential
-- Follow OOP principles strictly
-- Document all major decisions in the technical report
-- Test thoroughly before final submission
+#### 3.2 Banco de Dados
+- [x] **SQL Server**: Configurado e rodando (via Docker ou Local).
+- [x] **Eficiência**: Uso de Entity Framework e Repository Pattern.
+
+#### 3.3 Segurança
+- [ ] **Hash de Senhas**: As senhas ainda estão em texto plano. Necessário implementar hashing (ex: BCrypt).
+- [x] **Validações**: Validações básicas de modelo implementadas.
+
+### 4. Funcionalidades Extras (Diferenciadores)
+- [x] **Dockerização**: Projeto totalmente containerizado (Item de "Use of AI Tools" / "Knowledge Expansion").
+- [ ] **Transferências/Pagamentos**: A implementar.
+- [ ] **Dashboard**: A implementar no frontend.

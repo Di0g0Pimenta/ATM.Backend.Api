@@ -1,0 +1,36 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ATM.Backend.Api/Dockerfile
+    container_name: atm-backend-api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=MultibancoDB;User Id=sa;Password=YourStrong(!)Password;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - atm-network
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: atm-sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong(!)Password
+    ports:
+      - "1433:1433"
+    networks:
+      - atm-network
+    volumes:
+      - sqlvolume:/var/opt/mssql
+
+networks:
+  atm-network:
+    driver: bridge
+
+volumes:
+  sqlvolume:

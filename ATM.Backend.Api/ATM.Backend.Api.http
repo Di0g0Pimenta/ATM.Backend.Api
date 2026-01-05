@@ -1,1 +1,6 @@
-@ATM.Backend.Api_HostAddress = http://localhost:5229
+@ATM_Backend_Api_HostAddress = http://localhost:5141
+
+GET {{ATM_Backend_Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
