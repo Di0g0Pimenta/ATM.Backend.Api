@@ -68,3 +68,30 @@ Abaixo está o status atual do desenvolvimento em relação aos objetivos do pro
 - [x] **Dockerização**: Projeto totalmente containerizado (Item de "Use of AI Tools" / "Knowledge Expansion").
 - [ ] **Transferências/Pagamentos**: A implementar.
 - [ ] **Dashboard**: A implementar no frontend.
+
+## 📂 Estrutura do Projeto
+
+Abaixo segue uma explicação detalhada da organização das pastas e arquivos principais do projeto `ATM.Backend.Api`.
+
+### 📁 Diretórios Principais
+
+*   **`Controllers/`**: Contém os controladores da API, responsáveis por receber as requisições HTTP e retornar as respostas.
+    *   **`Local/`**: Controladores para operações locais (simulação de terminal).
+    *   **`Rest/`**: Controladores para a API RESTful padrão.
+*   **`Data/`**: Camada de acesso a dados.
+    *   **`AppDbContext.cs`**: Contexto do Entity Framework Core que gerencia a conexão com o banco de dados e mapeia as entidades para tabelas.
+*   **`Models/`**: Define as entidades de domínio do sistema.
+    *   **`Account.cs`**: Representa uma conta bancária.
+    *   **`Card.cs`**: Representa um cartão associado a uma conta.
+    *   **`Client.cs`**: Representa um cliente do banco.
+*   **`Repositories/`**: Implementação do padrão Repository para abstrair a lógica de acesso a dados.
+    *   **`GenericRepository.cs`**: Implementação genérica de operações CRUD.
+    *   **`IRepository.cs`**: Interface genérica para os repositórios.
+*   **`Migrations/`**: Arquivos gerados pelo Entity Framework para versionamento e evolução do esquema do banco de dados.
+
+### 📄 Arquivos Importantes
+
+*   **`Program.cs`**: O ponto de entrada da aplicação. Configura a injeção de dependência, o pipeline de requisição HTTP, a conexão com o banco de dados e o Swagger.
+*   **`appsettings.json`**: Arquivo de configuração da aplicação (ex: connection strings, níveis de log).
+*   **`Dockerfile`**: Instruções para criar a imagem Docker da aplicação, permitindo que ela rode em um container isolado.
+*   **`docker-compose.yml`**: (Na raiz da solução) Orquestra os containers da aplicação e do banco de dados SQL Server para subirem juntos.
