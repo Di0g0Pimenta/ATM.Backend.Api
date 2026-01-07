@@ -15,4 +15,6 @@ public class AppDbContext : DbContext
     public DbSet<Client> Clients { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Card> Cards { get; set; }
+    public DbSet<Bank> Banks { get; set; }
+    public DbSet<Movement> Movements { get; set; }
 }
