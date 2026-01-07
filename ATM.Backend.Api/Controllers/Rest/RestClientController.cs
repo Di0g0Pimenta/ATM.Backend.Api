@@ -4,10 +4,16 @@ using ATM.Backend.Api.Models;
 using ATM.Backend.Api.Repositories;
 using ATM.Backend.Api.Data;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace ATM.Backend.Api.Controllers.Rest;
 
+/// <summary>
+/// Controller para gestão de clientes. Requer autenticação.
+/// </summary>
 [Route("multibanco/client")]
 [ApiController]
+[Authorize]
 public class RestClientController : ControllerBase
 {
     public RestClientController(AppDbContext context)
@@ -41,6 +47,7 @@ public class RestClientController : ControllerBase
 
     // Cria um Client -- multibanco/client
     [HttpPost]
+    [AllowAnonymous]
     public async Task<ActionResult<Client>> CreateClient(Client client)
     {
         _clientRepository.Create(client);
