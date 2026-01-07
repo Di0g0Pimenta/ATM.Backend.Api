@@ -6,7 +6,7 @@ namespace ATM.Backend.Api.Models
     public class Bank : Model
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public string Name { get; set; } // Nome do banco
+        public string Code { get; set; } // Código identificador do banco (ex: 0033)
     }
 }

@@ -12,10 +12,8 @@ namespace ATM.Backend.Api.Models
 
 
         // lista de contas -- Um Ciente tem varias contas
-
         public List<Account> Accounts { get; set; }
         
-
         public void AddAccount(Account account)
         {
             Accounts.Add(account);

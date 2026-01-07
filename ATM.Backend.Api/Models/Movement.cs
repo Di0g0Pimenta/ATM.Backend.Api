@@ -11,6 +11,7 @@ namespace ATM.Backend.Api.Models
         public DateTime Date { get; set; } = DateTime.Now;
         public string Description { get; set; }
         
+        // Relacionamento: Uma movimentação pertence a um cartão
         public int CardId { get; set; }
         public Card Card { get; set; }
     }

@@ -10,8 +10,7 @@ public class Card : Model
     public int Number { get; set; }
     public string Name { get; set; }
     public int Pin { get; set; }
-    public DateTime ExpiryDate { get; set; } = DateTime.Today.AddYears(4);
-    
+    public DateTime ExpiryDate { get; set; } = DateTime.Today.AddYears(4); // Data de validade
     public int AccountId { get; set; }
     public Account Account { get; set; }
 }

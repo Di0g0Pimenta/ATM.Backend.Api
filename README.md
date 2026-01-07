@@ -31,43 +31,45 @@ docker-compose up --build -d
 ## ✅ Checklist de Requisitos - Projeto Final POO
 Abaixo está o status atual do desenvolvimento em relação aos objetivos do projeto final.
 
-### 1. Objetivos Gerais
-- [x] **Aplicação dos princípios de POO**: Projeto refatorado com herança (`Model`), encapsulamento (propriedades `private set` onde aplicável) e abstração (`IRepository`).
-- [ ] **Persistência dos movimentos**: O banco salva Clientes, Contas e Cartões, mas a tabela de Movimentos ainda não foi criada.
+### 1. Objetivos Gerais e POO
+- [x] **Aplicação dos princípios de POO**: Projeto refatorado com herança (`Model`), encapsulamento e abstração (`IRepository`).
+- [x] **Classes Base**: `Account`, `Client`, `Card`, `Bank`, `Movement` 100% implementadas.
+- [x] **Persistência**: Tabelas criadas e mapeadas via EF Core.
 
 ### 2. Requisitos Funcionais
-#### 2.1 Consultar Saldo
-- [x] **Estrutura de Dados**: Campo `Balance` existe na classe `Account`.
+- [x] **Consultar Saldo**: Campo `Balance` funcional na classe `Account`.
+- [x] **Levantar / Depositar Dinheiro**: Métodos `Debit` e `Deposit` com lógica de validação.
+- [x] **Registo de Movimentos**: Entidade `Movement` pronta para histórico.
+- [x] **Gestão de Clientes**: CRUD completo via API REST.
 
-#### 2.2 Levantar Dinheiro (Pick-up Money)
-- [x] **Lógica Básica**: Métodos `Debit` na classe `Account` verificam saldo.
-- [ ] **Registo de Movimento**: Falta criar entidade `Movement` e salvar o registo da operação no banco.
+### 3. Segurança e Infraestrutura
+- [x] **JWT Auth**: Autenticação via Token JWT funcional.
+- [x] **Proteção de Endpoints**: Acesso restrito via `[Authorize]`.
+- [x] **Dockerização**: Solução completa com App e SQL Server em containers.
+- [ ] **Hash de Senhas**: Senhas em texto plano (Próximo passo sugerido).
 
-#### 2.3 Depositar Dinheiro (Store Money)
-- [x] **Lógica Básica**: Métodos `Deposit` na classe `Account`.
-- [ ] **Registo de Movimento**: Falta criar entidade `Movement` e registrar.
+---
 
-#### 2.4 Listagem de Movimentos
-- [ ] **Histórico**: Falta implementar a entidade `Movement` e o endpoint/visualização para listar o histórico.
+## 📚 Documentação da API
 
-### 3. Requisitos Técnicos
-#### 3.1 POO
-- [x] **Classes Base**: `Conta` (Account), `Cliente` (Client), `Cartão` (Card) implementadas.
-- [ ] **Classes Faltantes**: `Movimento`, `Banco` (se for multi-banco real).
-- [ ] **Polimorfismo nas Operações**: Implementar classes derivadas para operações (ex: `Levantamento : Operacao`) para cumprir o requisito de polimorfismo.
+A API utiliza o prefixo base `/multibanco`.
 
-#### 3.2 Banco de Dados
-- [x] **SQL Server**: Configurado e rodando (via Docker ou Local).
-- [x] **Eficiência**: Uso de Entity Framework e Repository Pattern.
+### 🔐 Autenticação (`/auth`)
+*   `POST /auth/login`: Realiza o login.
+    *   **Request Body**: `{ "email": "admin@email.com", "password": "123" }`
+    *   **Response**: `{ "client": {...}, "token": "..." }`
 
-#### 3.3 Segurança
-- [ ] **Hash de Senhas**: As senhas ainda estão em texto plano. Necessário implementar hashing (ex: BCrypt).
-- [x] **Validações**: Validações básicas de modelo implementadas.
+### 👤 Clientes (`/client`)
+*   `POST /client`: **Registo Público**. Cria um novo cliente.
+*   `GET /client`: **Protegido**. Lista todos os clientes.
+*   `GET /client/{id}`: **Protegido**. Detalhes de um cliente.
+*   `PUT /client/{id}`: **Protegido**. Atualiza dados.
+*   `DELETE /client/{id}`: **Protegido**. Remove cliente.
 
-### 4. Funcionalidades Extras (Diferenciadores)
-- [x] **Dockerização**: Projeto totalmente containerizado (Item de "Use of AI Tools" / "Knowledge Expansion").
-- [ ] **Transferências/Pagamentos**: A implementar.
-- [ ] **Dashboard**: A implementar no frontend.
+> [!TIP]
+> No Swagger, use o botão **Authorize** e insira o valor: `Bearer <seu_token>`.
+
+---
 
 ## 📂 Estrutura do Projeto
 

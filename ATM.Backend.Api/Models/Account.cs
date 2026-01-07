@@ -10,10 +10,8 @@ namespace ATM.Backend.Api.Models
         public int Id { get; set; }
         public double Balance { get; set; } = 0;
         public string IBAN { get; set; }
-
         public int ClientId { get; set; }
         public Client Client { get; set; }
-
         public int BankId { get; set; }
         public Bank Bank { get; set; }
 
