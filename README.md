@@ -33,20 +33,26 @@ Abaixo está o status atual do desenvolvimento em relação aos objetivos do pro
 
 ### 1. Objetivos Gerais e POO
 - [x] **Aplicação dos princípios de POO**: Projeto refatorado com herança (`Model`), encapsulamento e abstração (`IRepository`).
-- [x] **Classes Base**: `Account`, `Client`, `Card`, `Bank`, `Movement` 100% implementadas.
-- [x] **Persistência**: Tabelas criadas e mapeadas via EF Core.
+- [ ] **Herança Avançada**: Implementar a hierarquia `Operation -> Withdrawal/Deposit/Transfer` (Pendente).
+- [ ] **Polimorfismo**: Aplicar polimorfismo no processamento de transações (Pendente).
+- [x] **Persistência**: Tabelas (Clients, Accounts, Cards, Banks, Movements) 100% mapeadas no SQL Server.
 
-### 2. Requisitos Funcionais
-- [x] **Consultar Saldo**: Campo `Balance` funcional na classe `Account`.
-- [x] **Levantar / Depositar Dinheiro**: Métodos `Debit` e `Deposit` com lógica de validação.
-- [x] **Registo de Movimentos**: Entidade `Movement` pronta para histórico.
-- [x] **Gestão de Clientes**: CRUD completo via API REST.
+### 2. Requisitos Funcionais (Back-End)
+- [x] **Consultar Saldo**: Lógica base pronta na entidade `Account`.
+- [ ] **Levantar / Depositar**: Criar endpoints REST que executem a lógica via `BankingService`.
+- [ ] **Transferências**: Implementar lógica entre diferentes bancos/IBANs.
+- [ ] **Histórico de Movimentos**: Implementar filtros por data e tipo.
 
-### 3. Segurança e Infraestrutura
+### 3. Inovação & Criatividade (Bónus 50%)
+- [ ] **Limites Diários**: Impedir levantamentos superiores a X por dia.
+- [ ] **Pagamentos de Serviços**: Simular Entidade/Referência (Água, Luz, etc).
+- [ ] **Dashboard API**: Endpoints para dados estatísticos simples.
+
+### 4. Segurança e Infraestrutura
 - [x] **JWT Auth**: Autenticação via Token JWT funcional.
 - [x] **Proteção de Endpoints**: Acesso restrito via `[Authorize]`.
 - [x] **Dockerização**: Solução completa com App e SQL Server em containers.
-- [ ] **Hash de Senhas**: Senhas em texto plano (Próximo passo sugerido).
+- [ ] **Hash de Senhas**: Implementar BCrypt ou similar para as passwords.
 
 ---
 
