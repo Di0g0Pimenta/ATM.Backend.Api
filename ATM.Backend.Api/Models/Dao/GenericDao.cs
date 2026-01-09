@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ATM.Backend.Api.Data;
 using ATM.Backend.Api.Models;
+using ATM.Backend.Api.Models.DbConnection;
 using ATM.Backend.Api.Repositories;
 
 namespace ATM.Backend.Api.Repositories;
 
-public abstract class GenericRepository<T> : IRepository<T>  where T : class, Model
+public abstract class GenericDao<T> : IDao<T>  where T : class, Model
 {
     
     protected readonly AppDbContext _context;
 
-    protected GenericRepository(AppDbContext context)
+    protected GenericDao(AppDbContext context)
     {
         _context = context;
     }

@@ -42,7 +42,7 @@ namespace ATM.Backend.Api.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Name, client.Name),
-                    new Claim(ClaimTypes.Email, client.Email),
+                    new Claim(ClaimTypes.Email, client.Username),
                     new Claim(ClaimTypes.NameIdentifier, client.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(2), // Token expira em 2 horas

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ATM.Backend.Api.Models;
 
-namespace ATM.Backend.Api.Data;
+namespace ATM.Backend.Api.Models.DbConnection;
 
 public class AppDbContext : DbContext
 {
@@ -16,5 +15,6 @@ public class AppDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Card> Cards { get; set; }
     public DbSet<Bank> Banks { get; set; }
-    public DbSet<Movement> Movements { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<Services> Services { get; set; }
 }

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ATM.Backend.Api.Models;
+using ATM.Backend.Api.Models.DbConnection;
 using ATM.Backend.Api.Repositories;
 using ATM.Backend.Api.Services;
-using ATM.Backend.Api.Data;
 
 namespace ATM.Backend.Api.Controllers.Rest
 {
@@ -13,12 +13,12 @@ namespace ATM.Backend.Api.Controllers.Rest
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ClientRepository _clientRepository;
+        private readonly ClientDao _clientDao;
         private readonly ITokenService _tokenService;
 
         public AuthController(AppDbContext context, ITokenService tokenService)
         {
-            _clientRepository = new ClientRepository(context);
+            _clientDao = new ClientDao(context);
             _tokenService = tokenService;
         }
 
@@ -30,9 +30,9 @@ namespace ATM.Backend.Api.Controllers.Rest
         [HttpPost("login")]
         public ActionResult<dynamic> Authenticate([FromBody] LoginModel login)
         {
-            // Busca o cliente pelo email e senha (idealmente a senha deveria estar hasheada)
-            var clients = _clientRepository.ListAll();
-            var client = clients.FirstOrDefault(x => x.Email == login.Email && x.Password == login.Password);
+            
+            var clients = _clientDao.ListAll();
+            var client = clients.FirstOrDefault(x => x.Username == login.Username && x.Password == login.Password);
 
             if (client == null)
                 return NotFound(new { message = "Usuário ou senha inválidos" });
@@ -42,7 +42,7 @@ namespace ATM.Backend.Api.Controllers.Rest
 
             return new
             {
-                client = new { id = client.Id, name = client.Name, email = client.Email },
+                client = new { id = client.Id, name = client.Name, email = client.Username },
                 token = token
             };
         }
@@ -50,7 +50,7 @@ namespace ATM.Backend.Api.Controllers.Rest
 
     public class LoginModel
     {
-        public string Email { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ATM.Backend.Api.Repositories;
 
-public interface IRepository<T>
+public interface IDao<T>
 {
     List<T> ListAll();
     

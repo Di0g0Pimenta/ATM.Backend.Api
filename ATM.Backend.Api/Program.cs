@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using ATM.Backend.Api.Data;
 using ATM.Backend.Api.Models;
 using ATM.Backend.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ATM.Backend.Api.Models.DbConnection;
 
 var builder = WebApplication.CreateBuilder(args);
 

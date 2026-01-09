@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore;
 namespace ATM.Backend.Api.Models
 {
     [PrimaryKey(nameof(Id))]
-    public class Movement : Model
+    public class Transaction : Model
     {
         public int Id { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
         public string Type { get; set; }
         public double Amount { get; set; }
-        public DateTime Date { get; set; } = DateTime.Now;
         public string Description { get; set; }
+        public Card ReceveCard { get; set; }
+        public Card OriginCard { get; set; }
         
-        // Relacionamento: Uma movimentação pertence a um cartão
-        public int CardId { get; set; }
-        public Card Card { get; set; }
     }
 }

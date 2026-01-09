@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ATM.Backend.Api.Models;
+using ATM.Backend.Api.Models.DbConnection;
 using ATM.Backend.Api.Repositories;
-using ATM.Backend.Api.Data;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace ATM.Backend.Api.Controllers.Rest;
@@ -18,24 +17,24 @@ public class RestClientController : ControllerBase
 {
     public RestClientController(AppDbContext context)
     {
-        _clientRepository = new ClientRepository(context);
+        _clientDao = new ClientDao(context);
     }
 
-    private ClientRepository _clientRepository;
+    private ClientDao _clientDao;
     
     
     // Retorna lista de todos Clients -- multibanco/client
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Client>>> GetAllClient()
     {
-        return _clientRepository.ListAll();
+        return _clientDao.ListAll();
     }
 
     // Retorna Client por id ou 404 se nao achar -- multibanco/client/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Client>> GetClient(int id)
     {
-        Client client = _clientRepository.GetById(id);
+        Client client = _clientDao.GetById(id);
 
         if (client == null)
         {
@@ -50,7 +49,7 @@ public class RestClientController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<Client>> CreateClient(Client client)
     {
-        _clientRepository.Create(client);
+        _clientDao.Create(client);
         
         return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
     } 
@@ -64,7 +63,7 @@ public class RestClientController : ControllerBase
             return BadRequest();
         }
         
-        if (_clientRepository.Update(client) == null)
+        if (_clientDao.Update(client) == null)
         {
             return NotFound();
         }
@@ -76,7 +75,7 @@ public class RestClientController : ControllerBase
     [HttpDelete]
     public async Task<ActionResult<Client>> DeleteClient(int id)
     {
-        Client client = _clientRepository.Delete(id);
+        Client client = _clientDao.Delete(id);
 
         if (client == null)
         {
