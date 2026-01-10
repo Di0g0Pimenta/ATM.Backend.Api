@@ -20,6 +20,11 @@ public abstract class GenericDao<T> : IDao<T>  where T : class, Model
         return _context.Set<T>().ToList();
     }
 
+    public T Get(T entity)
+    {
+        return _context.Set<T>().Find(entity.Id)!;
+    }
+
     public T GetById(int id)
     {
         return _context.Set<T>().Find(id)!;

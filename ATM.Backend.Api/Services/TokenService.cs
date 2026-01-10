@@ -41,7 +41,6 @@ namespace ATM.Backend.Api.Services
                 // Define as informações contidas no token (Claims)
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, client.Name),
                     new Claim(ClaimTypes.Email, client.Username),
                     new Claim(ClaimTypes.NameIdentifier, client.Id.ToString())
                 }),

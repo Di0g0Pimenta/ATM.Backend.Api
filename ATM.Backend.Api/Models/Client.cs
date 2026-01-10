@@ -7,7 +7,6 @@ namespace ATM.Backend.Api.Models
     public class Client : Model
     {
         public int Id { get; }
-        public string Name { get; set; }
         public string Password { get; set; }
         public string Username { get; set; }
     }

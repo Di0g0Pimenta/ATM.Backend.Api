@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ATM.Backend.Api.Dto;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ATM.Backend.Api.Models;
 using ATM.Backend.Api.Models.DbConnection;
 using ATM.Backend.Api.Repositories;
+using ATM.Backend.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ATM.Backend.Api.Controllers.Rest;
@@ -18,9 +20,11 @@ public class RestClientController : ControllerBase
     public RestClientController(AppDbContext context)
     {
         _clientDao = new ClientDao(context);
+        createAccountService = new CreateAccountService(context);
     }
 
     private ClientDao _clientDao;
+    private CreateAccountService createAccountService;
     
     
     // Retorna lista de todos Clients -- multibanco/client
@@ -47,12 +51,13 @@ public class RestClientController : ControllerBase
     // Cria um Client -- multibanco/client
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult<Client>> CreateClient(Client client)
+    public async Task<ActionResult<Client>> CreateClient(NewClientDto newClientDto)
     {
-        _clientDao.Create(client);
+        
+        Client client = createAccountService.createNewClient(newClientDto);
         
         return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
-    } 
+    }
     
     // Atualiza um Client -- multibanco/client/{id}
     [HttpPut("{id}")]

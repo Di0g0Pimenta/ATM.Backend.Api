@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ATM.Backend.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260109174212_MultibancoMigration")]
+    [Migration("20260110203418_MultibancoMigration")]
     partial class MultibancoMigration
     {
         /// <inheritdoc />
@@ -75,7 +75,7 @@ namespace ATM.Backend.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
                         .HasColumnType("int");
 
                     b.Property<int>("Balance")
@@ -84,8 +84,9 @@ namespace ATM.Backend.Api.Migrations
                     b.Property<int>("BankId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -103,10 +104,6 @@ namespace ATM.Backend.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -199,15 +196,19 @@ namespace ATM.Backend.Api.Migrations
 
             modelBuilder.Entity("ATM.Backend.Api.Models.Card", b =>
                 {
-                    b.HasOne("ATM.Backend.Api.Models.Account", null)
-                        .WithMany("Cards")
-                        .HasForeignKey("AccountId");
+                    b.HasOne("ATM.Backend.Api.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ATM.Backend.Api.Models.Bank", "Bank")
                         .WithMany()
                         .HasForeignKey("BankId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
 
                     b.Navigation("Bank");
                 });
@@ -240,11 +241,6 @@ namespace ATM.Backend.Api.Migrations
                     b.Navigation("OriginCard");
 
                     b.Navigation("ReceveCard");
-                });
-
-            modelBuilder.Entity("ATM.Backend.Api.Models.Account", b =>
-                {
-                    b.Navigation("Cards");
                 });
 #pragma warning restore 612, 618
         }

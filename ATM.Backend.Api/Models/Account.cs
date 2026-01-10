@@ -10,13 +10,6 @@ namespace ATM.Backend.Api.Models
         public int Id { get; set; }
         public double TotalBalance { get; set; } = 0;
         public Client Client { get; set; }
-        public List<Card>  Cards { get; set; }
-
-
-
-        public void addCard(Card card)
-        {
-            Cards.Add(card);
-        }
+        
     }
 }

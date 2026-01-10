@@ -42,7 +42,7 @@ namespace ATM.Backend.Api.Controllers.Rest
 
             return new
             {
-                client = new { id = client.Id, name = client.Name, email = client.Username },
+                client = new { id = client.Id, email = client.Username },
                 token = token
             };
         }
