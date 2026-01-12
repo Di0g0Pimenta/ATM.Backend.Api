@@ -19,12 +19,7 @@ public abstract class GenericDao<T> : IDao<T>  where T : class, Model
     {
         return _context.Set<T>().ToList();
     }
-
-    public T Get(T entity)
-    {
-        return _context.Set<T>().Find(entity.Id)!;
-    }
-
+    
     public T GetById(int id)
     {
         return _context.Set<T>().Find(id)!;
@@ -32,28 +27,62 @@ public abstract class GenericDao<T> : IDao<T>  where T : class, Model
 
     public T Create(T entity)
     {
-        _context.Set<T>().Add(entity);
-        _context.SaveChanges();
+        var strategy = _context.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
+        {
+            var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                _context.Set<T>().Add(entity);
+                _context.SaveChanges();
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }); 
+        
         return entity;
+        
     }
 
     public T Update(T entity)
     {
-        _context.Entry(entity).State = EntityState.Modified;
+        
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-        try
+        strategy.Execute(() =>
         {
-            _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Set<T>().Any(c => c.Id == entity.Id))
-            {
-                return null;
+            var transaction = _context.Database.BeginTransaction();
+        
+        
+            try
+            { 
+                _context.Entry(entity).State = EntityState.Modified;
+                _context.SaveChanges();
+                transaction.Commit();
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Set<T>().Any(c => c.Id == entity.Id))
+                {
+                    entity = null; 
+                    transaction.Rollback();
+                    return;
+                }
             
-            throw;
-        }
+                throw;
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
+        });
+        
         
         return  entity;
     }

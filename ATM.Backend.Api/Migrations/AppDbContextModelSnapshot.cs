@@ -33,8 +33,8 @@ namespace ATM.Backend.Api.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<double>("TotalBalance")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalBalance")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");
 
@@ -75,8 +75,8 @@ namespace ATM.Backend.Api.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Balance")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("BankId")
                         .HasColumnType("int");
@@ -123,8 +123,8 @@ namespace ATM.Backend.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("Entity")
                         .HasColumnType("int");
@@ -151,8 +151,8 @@ namespace ATM.Backend.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -161,10 +161,10 @@ namespace ATM.Backend.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OriginCardId")
+                    b.Property<int?>("DestinyCardId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReceveCardId")
+                    b.Property<int?>("SorceCardId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
@@ -173,9 +173,9 @@ namespace ATM.Backend.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OriginCardId");
+                    b.HasIndex("DestinyCardId");
 
-                    b.HasIndex("ReceveCardId");
+                    b.HasIndex("SorceCardId");
 
                     b.ToTable("Transactions");
                 });
@@ -223,21 +223,17 @@ namespace ATM.Backend.Api.Migrations
 
             modelBuilder.Entity("ATM.Backend.Api.Models.Transaction", b =>
                 {
-                    b.HasOne("ATM.Backend.Api.Models.Card", "OriginCard")
+                    b.HasOne("ATM.Backend.Api.Models.Card", "DestinyCard")
                         .WithMany()
-                        .HasForeignKey("OriginCardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DestinyCardId");
 
-                    b.HasOne("ATM.Backend.Api.Models.Card", "ReceveCard")
+                    b.HasOne("ATM.Backend.Api.Models.Card", "SorceCard")
                         .WithMany()
-                        .HasForeignKey("ReceveCardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SorceCardId");
 
-                    b.Navigation("OriginCard");
+                    b.Navigation("DestinyCard");
 
-                    b.Navigation("ReceveCard");
+                    b.Navigation("SorceCard");
                 });
 #pragma warning restore 612, 618
         }

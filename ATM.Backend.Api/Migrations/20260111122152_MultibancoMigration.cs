@@ -45,7 +45,7 @@ namespace ATM.Backend.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalBalance = table.Column<double>(type: "float", nullable: false),
+                    TotalBalance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -65,7 +65,7 @@ namespace ATM.Backend.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Balance = table.Column<int>(type: "int", nullable: false),
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BankId = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false)
@@ -95,22 +95,22 @@ namespace ATM.Backend.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<double>(type: "float", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReceveCardId = table.Column<int>(type: "int", nullable: false),
-                    OriginCardId = table.Column<int>(type: "int", nullable: false)
+                    DestinyCardId = table.Column<int>(type: "int", nullable: true),
+                    SorceCardId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Cards_OriginCardId",
-                        column: x => x.OriginCardId,
+                        name: "FK_Transactions_Cards_DestinyCardId",
+                        column: x => x.DestinyCardId,
                         principalTable: "Cards",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Transactions_Cards_ReceveCardId",
-                        column: x => x.ReceveCardId,
+                        name: "FK_Transactions_Cards_SorceCardId",
+                        column: x => x.SorceCardId,
                         principalTable: "Cards",
                         principalColumn: "Id");
                 });
@@ -123,7 +123,7 @@ namespace ATM.Backend.Api.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Entity = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TransactionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -158,14 +158,14 @@ namespace ATM.Backend.Api.Migrations
                 column: "TransactionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_OriginCardId",
+                name: "IX_Transactions_DestinyCardId",
                 table: "Transactions",
-                column: "OriginCardId");
+                column: "DestinyCardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_ReceveCardId",
+                name: "IX_Transactions_SorceCardId",
                 table: "Transactions",
-                column: "ReceveCardId");
+                column: "SorceCardId");
         }
 
         /// <inheritdoc />

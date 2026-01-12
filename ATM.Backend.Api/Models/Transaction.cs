@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace ATM.Backend.Api.Models
@@ -8,10 +9,11 @@ namespace ATM.Backend.Api.Models
         public int Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
         public string Type { get; set; }
-        public double Amount { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Amount { get; set; }
         public string Description { get; set; }
-        public Card ReceveCard { get; set; }
-        public Card OriginCard { get; set; }
+        public Card? DestinyCard { get; set; }
+        public Card? SorceCard { get; set; }
         
     }
 }

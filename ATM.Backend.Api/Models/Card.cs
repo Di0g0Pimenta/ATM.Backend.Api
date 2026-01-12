@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ATM.Backend.Api.Models;
 
@@ -7,7 +8,8 @@ namespace ATM.Backend.Api.Models;
 public class Card : Model
 {
     public int Id { get; set; }
-    public int Balance { get; set; }
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Balance { get; set; }
     public string Number { get; set; }
     public Bank Bank { get; set; }
     public Account Account { get; set; }
@@ -29,26 +31,14 @@ public class Card : Model
     
     // Tira ou coloca dinheiro no cartao
     
-    public void Debit(int amount)
-    {
-        if (CanDebit(amount)) Balance -= amount;
+    public void Withdraw(decimal amount)
+    { 
+        Balance -= amount;
     }
 
-    public void Deposit(int amount)
-    {
-        if (CanDeposit(amount)) Balance += amount;
-    }
-
-    // Verifica se pode tirar ou depositar dinheiro
-
-    private bool CanDeposit(int quantia)
-    {
-        return quantia > 0;
-    }
-
-    private bool CanDebit(int amount)
-    {
-        return amount < Balance && amount > 0;
+    public void Deposit(decimal amount)
+    { 
+        Balance += amount;
     }
 
     private string createCardNumber()

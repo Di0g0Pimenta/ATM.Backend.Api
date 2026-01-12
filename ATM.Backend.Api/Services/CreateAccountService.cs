@@ -30,7 +30,7 @@ public class CreateAccountService
         _clientDao.Create(client);
         
         Account account = new Account();
-        account.Client = _clientDao.Get(client);
+        account.Client = client;
         _accountDao.Create(account);
         
         Bank bank = _bankDao.GetById(clientDto.BankId);
