@@ -57,8 +57,7 @@ public abstract class GenericDao<T> : IDao<T>  where T : class, Model
         strategy.Execute(() =>
         {
             var transaction = _context.Database.BeginTransaction();
-        
-        
+            
             try
             { 
                 _context.Entry(entity).State = EntityState.Modified;

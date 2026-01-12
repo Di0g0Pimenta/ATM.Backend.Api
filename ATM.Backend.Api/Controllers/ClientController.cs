@@ -15,9 +15,9 @@ namespace ATM.Backend.Api.Controllers.Rest;
 [Route("multibanco/client")]
 [ApiController]
 [Authorize]
-public class RestClientController : ControllerBase
+public class ClientController : ControllerBase
 {
-    public RestClientController(AppDbContext context)
+    public ClientController(AppDbContext context)
     {
         _clientDao = new ClientDao(context);
         createAccountService = new CreateAccountService(context);
