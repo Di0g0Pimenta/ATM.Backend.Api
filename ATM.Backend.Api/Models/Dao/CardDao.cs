@@ -20,4 +20,9 @@ public class CardDao : GenericDao<Card>
     {
         return _context.Cards.Include(c => c.Account).FirstOrDefault(c => c.Number == cardNum)!;
     }
+
+    public List<Card> ListAll(int accountId)
+    {
+        return _context.Cards.Where(c => c.Account.Id == accountId).ToList();
+    }
 }

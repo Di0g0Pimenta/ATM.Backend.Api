@@ -9,7 +9,7 @@ namespace ATM.Backend.Api.Controllers.Rest;
 
 [Route("multibanco/card")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class CardController : ControllerBase
 {
   
@@ -33,6 +33,12 @@ public class CardController : ControllerBase
     }
     
     return card;
+  }
+
+  [HttpGet("/multibanco/card/listAccountCards/{accountId}")]
+  public async Task<ActionResult<IEnumerable<Card>>> getAllCardsByAccountId(int accountId)
+  {
+    return cardDao.ListAll(accountId);
   }
   
   
