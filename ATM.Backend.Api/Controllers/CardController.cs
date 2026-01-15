@@ -9,7 +9,7 @@ namespace ATM.Backend.Api.Controllers.Rest;
 
 [Route("multibanco/card")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class CardController : ControllerBase
 {
   
