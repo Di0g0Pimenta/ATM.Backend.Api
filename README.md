@@ -1,105 +1,134 @@
-# ATM.Backend.Api (Sistema Multibanco com Autenticação)
+# 🏦 ATM Backend API
 
-Este projeto implementa o backend de um sistema ATM (Multibanco) utilizando .NET 8, Entity Framework Core e SQL Server. O projeto foi estruturado seguindo boas práticas de POO e arquitetura limpa, e está dockerizado para facilidade de execução.
+![.NET 8](https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
-## 🚀 Como Executar o Projeto
+> **Sistema bancário robusto e seguro desenvolvido com arquitetura limpa e práticas modernas de Engenharia de Software.**
 
-### Pré-requisitos
-*   **Recomendado**: Docker Desktop instalado.
-*   **Alternativa (Local)**: .NET 8 SDK e SQL Server LocalDB instalados.
+## 📖 Visão Geral
 
-### Opção 1: Executando com Docker (Recomendado)
-Esta opção sobe a API e o Banco de Dados automaticamente em containers isolados.
+O **ATM Backend Api** é o núcleo de um sistema Multibanco moderno. Projetado para suportar operações financeiras críticas com alta confiabilidade, o sistema implementa autenticação segura, gestão de contas e transações em tempo real.
 
-**Primeira vez e subsequentes:**
-Abra o terminal na pasta raiz do projeto e execute:
-```bash
-docker-compose up --build -d
+O projeto segue estritamente os princípios de **Programação Orientada a Objetos (POO)** e **Arquitetura em Camadas**, garantindo manutenibilidade, escalabilidade e facilidade de testes.
+
+## 🏗️ Arquitetura e Design
+
+O sistema foi construído sobre uma arquitetura em camadas para garantir a separação de responsabilidades:
+
+```mermaid
+graph TD
+    A[API Controllers] --> B[Services / Business Logic]
+    B --> C[Data Access Objects (DAO)]
+    C --> D[SQL Server Database]
+    B --> E[Models / Domain Entities]
 ```
 
-*   **Acesse o Swagger UI**: [http://localhost:8080/swagger](http://localhost:8080/swagger)
-*   **Parar execução**: `docker-compose down`
+### Principais Padrões Utilizados
+*   **Repository Pattern (DAO):** Abstração do acesso a dados (`GenericDao<T>`), permitindo trocas fáceis de fonte de dados e testes simplificados.
+*   **DTO (Data Transfer Object):** Separação entre os modelos de domínio e os dados expostos publicamente na API.
+*   **Dependency Injection:** Gestão de dependências nativa do .NET 8 para acoplamento fraco.
+*   **Strategy/Polymorphism:** Implementação polimórfica para diferentes tipos de transações (Depósito, Levantamento).
 
-### Opção 2: Executando Localmente (Visual Studio)
-1.  Abra o arquivo `ATM.Backend.Api.sln` no Visual Studio.
-2.  Altere a Connection String em `appsettings.json` para apontar para seu SQL Server local.
-3.  Execute o comando `update-database` no Package Manager Console para criar o banco.
-4.  Pressione `F5` para iniciar o projeto.
+## ✨ Funcionalidades Chave
+
+*   **🔐 Autenticação Segura:** Sistema de Login via JWT (JSON Web Tokens).
+*   **💳 Gestão de Cartões:** Criação, associação a contas e validação de propriedade.
+*   **💰 Operações Bancárias:**
+    *   **Consultar Saldo:** Visualização em tempo real.
+    *   **Levantamentos & Depósitos:** Com validação estrita de fundos e valores.
+    *   **Transferências:** Movimentação entre contas segura e atómica.
+*   **🛡️ Segurança:** Validação de inputs, proteção contra saldos negativos e tratamento de exceções.
+*   **🐳 Docker Ready:** Ambiente completo (App + BD) pronto a rodar com um comando.
 
 ---
 
-## ✅ Checklist de Requisitos - Projeto Final POO
-Abaixo está o status atual do desenvolvimento em relação aos objetivos do projeto final.
+## 🚀 Como Executar
 
-### 1. Objetivos Gerais e POO
-- [x] **Aplicação dos princípios de POO**: Projeto refatorado com herança (`Model`), encapsulamento e abstração (`IRepository`).
-- [ ] **Herança Avançada**: Implementar a hierarquia `Operation -> Withdrawal/Deposit/Transfer` (Pendente).
-- [ ] **Polimorfismo**: Aplicar polimorfismo no processamento de transações (Pendente).
-- [x] **Persistência**: Tabelas (Clients, Accounts, Cards, Banks, Movements) 100% mapeadas no SQL Server.
+### Pré-requisitos
+*   **Docker Desktop** (Recomendado)
+*   *Ou* .NET 8 SDK + SQL Server LocalDB
 
-### 2. Requisitos Funcionais (Back-End)
-- [x] **Consultar Saldo**: Lógica base pronta na entidade `Account`.
-- [ ] **Levantar / Depositar**: Criar endpoints REST que executem a lógica via `BankingService`.
-- [ ] **Transferências**: Implementar lógica entre diferentes bancos/IBANs.
-- [ ] **Histórico de Movimentos**: Implementar filtros por data e tipo.
+### Opção 1: Via Docker (Recomendado)
+A forma mais rápida de iniciar. Sobe a API e o SQL Server automaticamente.
 
-### 3. Inovação & Criatividade (Bónus 50%)
-- [ ] **Limites Diários**: Impedir levantamentos superiores a X por dia.
-- [ ] **Pagamentos de Serviços**: Simular Entidade/Referência (Água, Luz, etc).
-- [ ] **Dashboard API**: Endpoints para dados estatísticos simples.
+```bash
+docker-compose up --build -d
+```
+*   **Swagger API:** [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
-### 4. Segurança e Infraestrutura
-- [x] **JWT Auth**: Autenticação via Token JWT funcional.
-- [x] **Proteção de Endpoints**: Acesso restrito via `[Authorize]`.
-- [x] **Dockerização**: Solução completa com App e SQL Server em containers.
-- [ ] **Hash de Senhas**: Implementar BCrypt ou similar para as passwords.
+### Opção 2: Desenvolvimento Local
+1.  Configure a Connection String no `appsettings.json`.
+2.  Aplique as migrações:
+    ```bash
+    dotnet ef database update
+    ```
+3.  Execute o projeto:
+    ```bash
+    dotnet run
+    ```
+
+
 
 ---
 
 ## 📚 Documentação da API
 
-A API utiliza o prefixo base `/multibanco`.
+A API segue o padrão RESTful e responde em JSON. Abaixo estão os detalhes dos principais endpoints.
 
-### 🔐 Autenticação (`/auth`)
-*   `POST /auth/login`: Realiza o login.
-    *   **Request Body**: `{ "email": "admin@email.com", "password": "123" }`
-    *   **Response**: `{ "client": {...}, "token": "..." }`
+#### 🔐 Autenticação (`/multibanco/auth`)
+| Método | Endpoint | Descrição | Request Body |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/login` | Autentica o utilizador e retorna um Token JWT. | `{ "username": "...", "password": "..." }` |
 
-### 👤 Clientes (`/client`)
-*   `POST /client`: **Registo Público**. Cria um novo cliente.
-*   `GET /client`: **Protegido**. Lista todos os clientes.
-*   `GET /client/{id}`: **Protegido**. Detalhes de um cliente.
-*   `PUT /client/{id}`: **Protegido**. Atualiza dados.
-*   `DELETE /client/{id}`: **Protegido**. Remove cliente.
+#### 👤 Clientes (`/multibanco/client`)
+| Método | Endpoint | Auth | Descrição |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/` | ❌ | **Registo**. Cria um novo cliente. Body: `{ "username": "...", "password": "..." }` |
+| `GET` | `/` | ✅ | Lista todos os clientes. |
+| `GET` | `/{id}` | ✅ | Obtém detalhes de um cliente específico. |
+| `PUT` | `/{id}` | ✅ | Atualiza os dados de um cliente. |
+| `DELETE` | `/{id}` | ✅ | Remove um cliente do sistema. |
 
-> [!TIP]
-> No Swagger, use o botão **Authorize** e insira o valor: `Bearer <seu_token>`.
+#### 💳 Cartões (`/multibanco/card`)
+| Método | Endpoint | Auth | Descrição |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/{id}` | ✅ | Obtém detalhes de um cartão (inclui saldo). |
+| `POST` | `/add/{accountId}/{bankId}` | ✅ | Cria um novo cartão associado a uma conta e banco. |
+| `GET` | `/listAccountCards/{accountId}` | ✅ | Lista todos os cartões de uma conta. |
+
+#### 💰 Transações (`/multibanco/transaction`)
+| Método | Endpoint | Auth | Descrição | Request Body (Exemplo) |
+| :--- | :--- | :--- | :--- | :--- |
+| `PUT` | `/` | ✅ | Executa Depósito, Levantamento ou Transferência. | `{ "scrId": 1, "dstCardNumber": "", "amount": 50 }` |
+
+> ⚠️ **Nota Importante:** Para endpoints protegidos (✅), deve enviar o cabeçalho: `Authorization: Bearer <seu_token>`.
 
 ---
 
-## 📂 Estrutura do Projeto
+## ✅ Estado do Projeto (Roadmap)
 
-Abaixo segue uma explicação detalhada da organização das pastas e arquivos principais do projeto `ATM.Backend.Api`.
+### 1. Core & POO
+- [x] **POO Avançado**: Herança (`Model`), Encapsulamento e Abstração.
+- [x] **Persistência**: Entity Framework Core com SQL Server.
+- [x] **Validações de Negócio**: Impedir saldos negativos e operações inválidas.
 
-### 📁 Diretórios Principais
+### 2. Funcionalidades Bancárias
+- [x] **Consultar Saldo**: Via endpoint de cartão.
+- [x] **Levantar / Depositar**: Implementado com validações de segurança.
+- [x] **Transferências**: Funcional entre contas.
+- [ ] **Polimorfismo (Refatoração)**: Migrar lógica de `IFs` para Classes de Transação.
 
-*   **`Controllers/`**: Contém os controladores da API, responsáveis por receber as requisições HTTP e retornar as respostas.
-    *   **`Local/`**: Controladores para operações locais (simulação de terminal).
-    *   **`Rest/`**: Controladores para a API RESTful padrão.
-*   **`Data/`**: Camada de acesso a dados.
-    *   **`AppDbContext.cs`**: Contexto do Entity Framework Core que gerencia a conexão com o banco de dados e mapeia as entidades para tabelas.
-*   **`Models/`**: Define as entidades de domínio do sistema.
-    *   **`Account.cs`**: Representa uma conta bancária.
-    *   **`Card.cs`**: Representa um cartão associado a uma conta.
-    *   **`Client.cs`**: Representa um cliente do banco.
-*   **`Repositories/`**: Implementação do padrão Repository para abstrair a lógica de acesso a dados.
-    *   **`GenericRepository.cs`**: Implementação genérica de operações CRUD.
-    *   **`IRepository.cs`**: Interface genérica para os repositórios.
-*   **`Migrations/`**: Arquivos gerados pelo Entity Framework para versionamento e evolução do esquema do banco de dados.
+### 3. Segurança & Qualidade
+- [x] **JWT Auth**: Proteção total de endpoints sensíveis.
 
-### 📄 Arquivos Importantes
+- [x] **Dockerização**: Ambiente isolado e reprodutível.
 
-*   **`Program.cs`**: O ponto de entrada da aplicação. Configura a injeção de dependência, o pipeline de requisição HTTP, a conexão com o banco de dados e o Swagger.
-*   **`appsettings.json`**: Arquivo de configuração da aplicação (ex: connection strings, níveis de log).
-*   **`Dockerfile`**: Instruções para criar a imagem Docker da aplicação, permitindo que ela rode em um container isolado.
-*   **`docker-compose.yml`**: (Na raiz da solução) Orquestra os containers da aplicação e do banco de dados SQL Server para subirem juntos.
+---
+
+<div align="center">
+  <h3>Projeto de Programação Orientada a Objetos (POO)</h3>
+  <p>Desenvolvido por:</p>
+  <p><strong>Diogo Pimenta</strong> e <strong>Olavo</strong></p>
+</div>
