@@ -20,7 +20,7 @@ O sistema foi construído sobre uma arquitetura em camadas para garantir a separ
 ```mermaid
 graph TD
     A[API Controllers] --> B[Services / Business Logic]
-    B --> C[Data Access Objects (DAO)]
+    B --> C["Data Access Objects (DAO)"]
     C --> D[SQL Server Database]
     B --> E[Models / Domain Entities]
 ```
