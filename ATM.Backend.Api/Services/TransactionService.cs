@@ -40,11 +40,17 @@ public class TransactionService
 
     private Transaction withdraw(Transaction transaction, TransactionDto transactionDto)
     {
+        if (transactionDto.amount <= 0)
+            throw new InvalidOperationException("Amount must be positive.");
+
         transaction.Type = "Withdraw";
         transaction.DestinyCard = null;
         transaction.Description = "ATM Withdraw";
         
         Card card = _cardDao.GetById(transactionDto.scrId);
+
+        if (card.Account.TotalBalance < transactionDto.amount)
+            throw new InvalidOperationException("Insufficient funds.");
         
         card.Account.TotalBalance -= transactionDto.amount;
         transaction.SorceCard = card;
@@ -59,6 +65,9 @@ public class TransactionService
 
     private Transaction deposit(Transaction transaction, TransactionDto transactionDto)
     {
+        if (transactionDto.amount <= 0)
+            throw new InvalidOperationException("Amount must be positive.");
+
         transaction.Type = "Deposit";
         transaction.SorceCard = null;
         transaction.Description = "ATM Deposit";
@@ -79,16 +88,22 @@ public class TransactionService
 
     private Transaction transfer(Transaction transaction, TransactionDto transactionDto)
     {
+        if (transactionDto.amount <= 0)
+            throw new InvalidOperationException("Amount must be positive.");
+
         transaction.Type = "Transfer";
         transaction.Description = "Account Transfer";
         
         Card dstCard = _cardDao.GetByCardNum(transactionDto.dstCardNumber);
         Card srcCard = _cardDao.GetById(transactionDto.scrId);
 
-        if (dstCard == null) // If have any card with the desitiny card number
+        if (dstCard == null) 
         {
-            return null;
+             throw new InvalidOperationException("Destination card not found.");
         }
+
+        if (srcCard.Account.TotalBalance < transactionDto.amount)
+            throw new InvalidOperationException("Insufficient funds.");
         
         transaction.SorceCard = srcCard;
         transaction.DestinyCard = dstCard;
