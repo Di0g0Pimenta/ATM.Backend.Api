@@ -32,9 +32,9 @@ namespace ATM.Backend.Api.Controllers.Rest
         {
             
             var clients = _clientDao.ListAll();
-            var client = clients.FirstOrDefault(x => x.Username == login.Username && x.Password == login.Password);
-
-            if (client == null)
+            var client = clients.FirstOrDefault(x => x.Username == login.Username);
+            
+            if (client == null || !BCrypt.Net.BCrypt.Verify(login.Password, client.Password))
                 return NotFound(new { message = "Usuário ou senha inválidos" });
 
             // Gera o token JWT para o cliente encontrado

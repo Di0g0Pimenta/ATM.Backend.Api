@@ -33,13 +33,13 @@ graph TD
 
 ## ✨ Funcionalidades Chave
 
-*   **🔐 Autenticação Segura:** Sistema de Login via JWT (JSON Web Tokens).
+*   **🔐 Autenticação Segura:** Sistema de Login via JWT (JSON Web Tokens) com **Hashing de senhas via BCrypt**.
 *   **💳 Gestão de Cartões:** Criação, associação a contas e validação de propriedade.
 *   **💰 Operações Bancárias:**
     *   **Consultar Saldo:** Visualização em tempo real.
     *   **Levantamentos & Depósitos:** Com validação estrita de fundos e valores.
     *   **Transferências:** Movimentação entre contas segura e atómica.
-*   **🛡️ Segurança:** Validação de inputs, proteção contra saldos negativos e tratamento de exceções.
+*   **🛡️ Segurança:** Criptografia de senhas (BCrypt), validação de inputs e proteção contra saldos negativos.
 *   **🐳 Docker Ready:** Ambiente completo (App + BD) pronto a rodar com um comando.
 
 ---
@@ -122,6 +122,7 @@ A API segue o padrão RESTful e responde em JSON. Abaixo estão os detalhes dos 
 
 ### 3. Segurança & Qualidade
 - [x] **JWT Auth**: Proteção total de endpoints sensíveis.
+- [x] **Segurança de Dados**: Hashing de senhas utilizando BCrypt.Net.
 
 - [x] **Dockerização**: Ambiente isolado e reprodutível.
 
