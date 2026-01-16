@@ -42,17 +42,21 @@ public class Card : Model
     }
 
     private string createCardNumber()
+{
+    if (Bank == null || string.IsNullOrEmpty(Bank.Code))
     {
-        Random random = new Random();
-
-        string number = Bank.Code;
-
-        for (int i = 0; i < 12; i++)
-        {
-            number += random.Next(0, 9).ToString();
-        }
-        
-        return number;
+        throw new InvalidOperationException("Bank information is required to create a card number.");
     }
+    
+    Random random = new Random();
+    string number = Bank.Code;
+
+    for (int i = 0; i < 12; i++)
+    {
+        number += random.Next(0, 9).ToString();
+    }
+    
+    return number;
+}
     
 }
