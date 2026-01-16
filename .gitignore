@@ -2,4 +2,4 @@ bin/
 obj/
 .vs/
 .vscode/
-appsettings.Development.json
+# appsettings.Development.json (Removido do ignore para compartilhar com a equipe)
