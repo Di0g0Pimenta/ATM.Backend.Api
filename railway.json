@@ -1,12 +1,7 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "DOCKER",
-    "dockerfilePath": "ATM.Backend.Api/Dockerfile",
-    "context": "."
-  },
-  "deploy": {
-    "startCommand": "dotnet ATM.Backend.Api.dll",
-    "restartPolicyType": "ON_FAILURE"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "ATM.Backend.Api/Dockerfile"
   }
 }
