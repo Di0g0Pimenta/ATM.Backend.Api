@@ -87,6 +87,9 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<AppDbContext>();
         // Wait for DB to be ready and apply migrations
         context.Database.Migrate();
+        
+        // Seed initial data
+        DbSeeder.Seed(context);
     }
     catch (Exception ex)
     {
