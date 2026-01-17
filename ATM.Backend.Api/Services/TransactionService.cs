@@ -11,30 +11,46 @@ public class TransactionService
     private readonly TransactionDao _transactionDao;
     private readonly AccountDao _accountDao;
 
-    public TransactionService(AppDbContext context)
+    private readonly AppDbContext _context;
+
+    public TransactionService(AppDbContext context, CardDao cardDao, TransactionDao transactionDao, AccountDao accountDao)
     {
-        _cardDao = new CardDao(context);
-        _transactionDao = new TransactionDao(context);
-        _accountDao = new AccountDao(context);
+        _context = context;
+        _cardDao = cardDao;
+        _transactionDao = transactionDao;
+        _accountDao = accountDao;
     }
     
     public Transaction transactionOperation(TransactionDto transactionDto)
     {
-        Transaction transaction = new Transaction();
-        transaction.Amount = transactionDto.amount;
-        
-        if (transactionDto.scrId == -1)
+        using var transactionScope = _context.Database.BeginTransaction();
+        try
         {
-            return deposit(transaction, transactionDto);
-        }
+            Transaction transaction = new Transaction();
+            transaction.Amount = transactionDto.amount;
+            
+            Transaction result;
+            if (transactionDto.scrId == -1)
+            {
+                result = deposit(transaction, transactionDto);
+            }
+            else if (string.IsNullOrEmpty(transactionDto.dstCardNumber))
+            {
+                result = withdraw(transaction, transactionDto);
+            }
+            else
+            {
+                result = transfer(transaction, transactionDto);
+            }
 
-        if (transactionDto.dstCardNumber == "")
-        {
-            return withdraw(transaction, transactionDto);
+            transactionScope.Commit();
+            return result;
         }
-        
-        
-        return transfer(transaction, transactionDto);
+        catch (Exception)
+        {
+            transactionScope.Rollback();
+            throw;
+        }
     }
 
 
@@ -48,6 +64,12 @@ public class TransactionService
         transaction.Description = "ATM Withdraw";
         
         Card card = _cardDao.GetById(transactionDto.scrId);
+
+        if (card == null)
+            throw new KeyNotFoundException($"Source card with ID {transactionDto.scrId} not found.");
+
+        if (card.Account == null)
+            throw new InvalidOperationException("Source card is not associated with any account.");
 
         if (card.Account.TotalBalance < transactionDto.amount)
             throw new InvalidOperationException("Insufficient funds.");
@@ -74,6 +96,11 @@ public class TransactionService
         
         Card card = _cardDao.GetByCardNum(transactionDto.dstCardNumber);
         
+        if (card == null)
+            throw new KeyNotFoundException($"Destination card with number {transactionDto.dstCardNumber} not found.");
+
+        if (card.Account == null)
+            throw new InvalidOperationException("Destination card is not associated with any account.");
         
         card.Account.TotalBalance += transactionDto.amount;
         transaction.DestinyCard = card;
@@ -97,10 +124,14 @@ public class TransactionService
         Card dstCard = _cardDao.GetByCardNum(transactionDto.dstCardNumber);
         Card srcCard = _cardDao.GetById(transactionDto.scrId);
 
+        if (srcCard == null)
+            throw new KeyNotFoundException($"Source card with ID {transactionDto.scrId} not found.");
+
         if (dstCard == null) 
-        {
-             throw new InvalidOperationException("Destination card not found.");
-        }
+            throw new KeyNotFoundException($"Destination card with number {transactionDto.dstCardNumber} not found.");
+
+        if (srcCard.Account == null || dstCard.Account == null)
+            throw new InvalidOperationException("One or both cards are not associated with an account.");
 
         if (srcCard.Account.TotalBalance < transactionDto.amount)
             throw new InvalidOperationException("Insufficient funds.");

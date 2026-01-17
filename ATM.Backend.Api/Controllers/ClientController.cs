@@ -17,14 +17,14 @@ namespace ATM.Backend.Api.Controllers.Rest;
 [Authorize]
 public class ClientController : ControllerBase
 {
-    public ClientController(AppDbContext context)
+    public ClientController(ATM.Backend.Api.Repositories.ClientDao clientDao, CreateAccountService createAccountService)
     {
-        _clientDao = new ClientDao(context);
-        createAccountService = new CreateAccountService(context);
+        _clientDao = clientDao;
+        _createAccountService = createAccountService;
     }
 
-    private ClientDao _clientDao;
-    private CreateAccountService createAccountService;
+    private readonly ATM.Backend.Api.Repositories.ClientDao _clientDao;
+    private readonly CreateAccountService _createAccountService;
     
     
     // Retorna lista de todos Clients -- multibanco/client
@@ -48,13 +48,13 @@ public class ClientController : ControllerBase
         return client;
     }
 
-    // Cria um Client -- multibanco/client
     [HttpPost]
     [AllowAnonymous]
     public async Task<ActionResult<Client>> CreateClient(NewClientDto newClientDto)
     {
-        
-        Client client = createAccountService.createNewClient(newClientDto);
+        // A exceção InvalidOperationException será capturada pelo GlobalExceptionMiddleware
+        // e retornará automaticamente um BadRequest (400) com a mensagem de erro
+        Client client = _createAccountService.createNewClient(newClientDto);
         
         return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
     }

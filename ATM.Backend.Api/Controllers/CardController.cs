@@ -13,19 +13,19 @@ namespace ATM.Backend.Api.Controllers.Rest;
 public class CardController : ControllerBase
 {
   
-  private readonly AddCardService addCardService;
-  private readonly CardDao cardDao;
+  private readonly AddCardService _addCardService;
+  private readonly CardDao _cardDao;
   
-  public CardController(AppDbContext context)
+  public CardController(AddCardService addCardService, CardDao cardDao)
   {
-    cardDao = new CardDao(context);
-    addCardService = new AddCardService(context);
+    _addCardService = addCardService;
+    _cardDao = cardDao;
   }
 
   [HttpGet("{id}")]
   public async Task<ActionResult<Card>> getCard(int id)
   {
-    Card card = cardDao.GetById(id);
+    Card card = _cardDao.GetById(id);
     
     if (card == null)
     {
@@ -38,7 +38,7 @@ public class CardController : ControllerBase
   [HttpGet("/multibanco/card/listAccountCards/{accountId}")]
   public async Task<ActionResult<IEnumerable<Card>>> getAllCardsByAccountId(int accountId)
   {
-    return cardDao.ListAll(accountId);
+    return _cardDao.ListAll(accountId);
   }
   
   
@@ -46,7 +46,7 @@ public class CardController : ControllerBase
   public async Task<ActionResult<Card>> addCard(int bankId, int accountId)
   {
     
-    Card newCard = addCardService.AddCard(bankId, accountId);
+    Card newCard = _addCardService.AddCard(bankId, accountId);
     
     return CreatedAtAction(nameof(getCard), new { id = newCard.Id }, newCard);
   }

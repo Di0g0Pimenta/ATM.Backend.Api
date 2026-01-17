@@ -16,9 +16,9 @@ namespace ATM.Backend.Api.Controllers.Rest
         private readonly ClientDao _clientDao;
         private readonly ITokenService _tokenService;
 
-        public AuthController(AppDbContext context, ITokenService tokenService)
+        public AuthController(ATM.Backend.Api.Repositories.ClientDao clientDao, ITokenService tokenService)
         {
-            _clientDao = new ClientDao(context);
+            _clientDao = clientDao;
             _tokenService = tokenService;
         }
 

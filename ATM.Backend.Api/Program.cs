@@ -46,6 +46,14 @@ builder.Services.AddAuthentication(x =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<TransactionService>();
+builder.Services.AddScoped<CreateAccountService>();
+builder.Services.AddScoped<AddCardService>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.TransactionDao>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.CardDao>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.AccountDao>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.ClientDao>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.BankDao>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -105,6 +113,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 // Importante: Authentication deve vir antes de Authorization
+app.UseMiddleware<ATM.Backend.Api.Middleware.GlobalExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

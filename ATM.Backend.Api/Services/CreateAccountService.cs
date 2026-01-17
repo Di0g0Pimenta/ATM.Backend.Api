@@ -7,22 +7,25 @@ namespace ATM.Backend.Api.Services;
 
 public class CreateAccountService
 {
-    public ClientDao _clientDao;
-    public AccountDao _accountDao;
-    public CardDao _cardDao;
-    public BankDao _bankDao;
+    private readonly ClientDao _clientDao;
+    private readonly AccountDao _accountDao;
+    private readonly CardDao _cardDao;
+    private readonly BankDao _bankDao;
     
-    public CreateAccountService(AppDbContext context)
+    public CreateAccountService(ClientDao clientDao, AccountDao accountDao, CardDao cardDao, BankDao bankDao)
     {
-        _clientDao = new ClientDao(context);
-        _accountDao = new AccountDao(context);
-        _cardDao = new CardDao(context);
-        _bankDao = new BankDao(context);
+        _clientDao = clientDao;
+        _accountDao = accountDao;
+        _cardDao = cardDao;
+        _bankDao = bankDao;
     }
     
     
     public Client createNewClient(NewClientDto clientDto)
     {
+        // Verificar se o username já existe
+        if (_clientDao.UsernameExists(clientDto.Username))
+            throw new InvalidOperationException($"Username '{clientDto.Username}' is already in use.");
         
         Client client = new Client();
         client.Username = clientDto.Username;
@@ -34,6 +37,9 @@ public class CreateAccountService
         _accountDao.Create(account);
         
         Bank bank = _bankDao.GetById(clientDto.BankId);
+        if (bank == null)
+            throw new KeyNotFoundException($"Bank with ID {clientDto.BankId} not found.");
+
         Card card = new Card(bank, account);
         _cardDao.Create(card);
         return client;

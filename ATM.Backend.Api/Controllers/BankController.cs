@@ -11,16 +11,16 @@ namespace ATM.Backend.Api.Controllers.Rest;
 [Authorize]
 public class BankController : ControllerBase
 {
-    private readonly BankDao bankDao;
-
-    public BankController(AppDbContext context)
+    private readonly BankDao _bankDao;
+    
+    public BankController(BankDao bankDao)
     {
-        bankDao = new BankDao(context);
+        _bankDao = bankDao;
     }
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Bank>>> GetAllBanks()
     {
-        return bankDao.ListAll();
+        return _bankDao.ListAll();
     }
 }

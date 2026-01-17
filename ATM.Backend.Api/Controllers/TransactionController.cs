@@ -16,10 +16,10 @@ public class TransactionController : ControllerBase
     private readonly TransactionService _transactionService;
     private readonly TransactionDao _transactionDao;
     
-    public TransactionController(AppDbContext context)
+    public TransactionController(TransactionService transactionService, ATM.Backend.Api.Repositories.TransactionDao transactionDao)
     {
-        this._transactionDao = new TransactionDao(context);
-        _transactionService = new TransactionService(context);
+        _transactionService = transactionService;
+        _transactionDao = transactionDao;
     }
 
 
