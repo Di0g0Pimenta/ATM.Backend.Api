@@ -54,9 +54,9 @@ public class ClientController : ControllerBase
     {
         // A exceção InvalidOperationException será capturada pelo GlobalExceptionMiddleware
         // e retornará automaticamente um BadRequest (400) com a mensagem de erro
-        Client client = _createAccountService.createNewClient(newClientDto);
+        _createAccountService.createNewClient(newClientDto);
         
-        return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
+        return Created();
     }
     
     // Atualiza um Client -- multibanco/client/{id}

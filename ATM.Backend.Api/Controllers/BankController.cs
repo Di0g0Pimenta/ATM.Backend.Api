@@ -8,7 +8,6 @@ namespace ATM.Backend.Api.Controllers.Rest;
 
 [Route("api/bank")]
 [ApiController]
-[Authorize]
 public class BankController : ControllerBase
 {
     private readonly BankDao _bankDao;

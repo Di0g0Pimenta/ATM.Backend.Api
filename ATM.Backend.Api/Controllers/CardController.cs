@@ -1,4 +1,5 @@
-﻿using ATM.Backend.Api.Models;
+﻿using ATM.Backend.Api.Dto;
+using ATM.Backend.Api.Models;
 using ATM.Backend.Api.Models.DbConnection;
 using ATM.Backend.Api.Repositories;
 using ATM.Backend.Api.Services;
@@ -43,11 +44,10 @@ public class CardController : ControllerBase
   
   
   [HttpPost("add/{accountId}/{bankId}")]
-  public async Task<ActionResult<Card>> addCard(int bankId, int accountId)
+  public async Task<ActionResult<Card>> addCard(NewCardDto newCardDto)
   {
+    _addCardService.AddCard(newCardDto.bankId, newCardDto.accountId, newCardDto.cardNumber);
     
-    Card newCard = _addCardService.AddCard(bankId, accountId);
-    
-    return CreatedAtAction(nameof(getCard), new { id = newCard.Id }, newCard);
+    return Created();
   }
 }

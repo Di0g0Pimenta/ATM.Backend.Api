@@ -40,7 +40,7 @@ namespace ATM.Backend.Api.Models.DbConnection
 
             // 4. Criar Cartão associado à conta e banco
             // Usamos o construtor existente que gera o número do cartão automaticamente
-            var card = new Card(bank, account)
+            var card = new Card(bank, account, "111111111111")
             {
                 Balance = 1000.00m
             };

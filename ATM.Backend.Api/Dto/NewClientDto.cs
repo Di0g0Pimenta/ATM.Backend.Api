@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ATM.Backend.Api.Models;
 
 namespace ATM.Backend.Api.Dto;
 
@@ -16,4 +15,8 @@ public class NewClientDto
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "BankId is required and must be valid.")]
     public int BankId { get; set; }
+    
+    [Required]
+    [StringLength(12)]
+    public string cardNumber {get; set; }
 }

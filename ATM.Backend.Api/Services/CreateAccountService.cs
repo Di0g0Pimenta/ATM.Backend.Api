@@ -21,7 +21,7 @@ public class CreateAccountService
     }
     
     
-    public Client createNewClient(NewClientDto clientDto)
+    public void createNewClient(NewClientDto clientDto)
     {
         // Verificar se o username já existe
         if (_clientDao.UsernameExists(clientDto.Username))
@@ -36,13 +36,17 @@ public class CreateAccountService
         account.Client = client;
         _accountDao.Create(account);
         
+        
+        /*
+         acredito que isso nao faz muito sentido,
+         pois como é uma comboBox nao ha como o cliente escolher um banco que nao existe
+         */
         Bank bank = _bankDao.GetById(clientDto.BankId);
         if (bank == null)
             throw new KeyNotFoundException($"Bank with ID {clientDto.BankId} not found.");
-
-        Card card = new Card(bank, account);
+        
+        Card card = new Card(bank, account, clientDto.cardNumber);
         _cardDao.Create(card);
-        return client;
     }
     
 }

@@ -19,12 +19,12 @@ public class Card : Model
         
     }
     
-    public Card(Bank bank, Account account)
+    public Card(Bank bank, Account account, string number)
     {
         Account = account;
         Bank = bank;
         Balance = 0;
-        Number = createCardNumber();
+        Number = number;
     }
     
     
@@ -40,23 +40,4 @@ public class Card : Model
     { 
         Balance += amount;
     }
-
-    private string createCardNumber()
-{
-    if (Bank == null || string.IsNullOrEmpty(Bank.Code))
-    {
-        throw new InvalidOperationException("Bank information is required to create a card number.");
-    }
-    
-    Random random = new Random();
-    string number = Bank.Code;
-
-    for (int i = 0; i < 12; i++)
-    {
-        number += random.Next(0, 9).ToString();
-    }
-    
-    return number;
-}
-    
 }
