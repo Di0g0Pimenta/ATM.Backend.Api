@@ -97,7 +97,7 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
         
         // Seed initial data
-        //DbSeeder.Seed(context);
+        DbSeeder.Seed(context);
     }
     catch (Exception ex)
     {
