@@ -124,16 +124,20 @@ public class TransactionService
         Card dstCard = _cardDao.GetByCardNum(transactionDto.dstCardNumber);
         Card srcCard = _cardDao.GetById(transactionDto.scrId);
 
+        // Acredito que isso tambem nao é necessario pois para ele fazer uma transacao ele ja tem que ter o cartao logado
+        
         if (srcCard == null)
             throw new KeyNotFoundException($"Source card with ID {transactionDto.scrId} not found.");
 
         if (dstCard == null) 
             throw new KeyNotFoundException($"Destination card with number {transactionDto.dstCardNumber} not found.");
 
+        // Acredito que isso tambem nao é necessario porque nao tem como ter um cartao sem conta
+        
         if (srcCard.Account == null || dstCard.Account == null)
             throw new InvalidOperationException("One or both cards are not associated with an account.");
-
-        if (srcCard.Account.TotalBalance < transactionDto.amount)
+        
+        if (srcCard.Balance < transactionDto.amount)
             throw new InvalidOperationException("Insufficient funds.");
         
         transaction.SorceCard = srcCard;

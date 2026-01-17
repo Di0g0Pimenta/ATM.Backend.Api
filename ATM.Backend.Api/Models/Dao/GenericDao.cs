@@ -29,6 +29,7 @@ public abstract class GenericDao<T> : IDao<T>  where T : class, Model
     {
         var strategy = _context.Database.CreateExecutionStrategy();
 
+        
         strategy.Execute(() =>
         {
             var transaction = _context.Database.BeginTransaction();
