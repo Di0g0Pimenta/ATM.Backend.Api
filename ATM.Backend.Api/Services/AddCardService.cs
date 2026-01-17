@@ -19,6 +19,9 @@ public class AddCardService
 
     public void AddCard(int bankId, int accountId, string  cardNumber)
     {
+        if (_cardDao.CardNumberExists(cardNumber))
+            throw new InvalidOperationException($"Card '{cardNumber}' is already in use.");
+        
         Bank bank =  _bankDao.GetById(bankId);
         Account account = _accountDao.GetById(accountId);
 

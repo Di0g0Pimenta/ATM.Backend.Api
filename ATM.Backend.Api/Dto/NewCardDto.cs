@@ -11,6 +11,6 @@ public class NewCardDto
     public int accountId { get; set; }
     
     [Required]
-    [StringLength(12)]
+    [StringLength(12,  MinimumLength = 12)]
     public string cardNumber { get; set; }
 }

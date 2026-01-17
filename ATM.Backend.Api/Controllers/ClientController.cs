@@ -17,14 +17,14 @@ namespace ATM.Backend.Api.Controllers.Rest;
 [Authorize]
 public class ClientController : ControllerBase
 {
-    public ClientController(ATM.Backend.Api.Repositories.ClientDao clientDao, CreateAccountService createAccountService)
-    {
-        _clientDao = clientDao;
-        _createAccountService = createAccountService;
-    }
-
-    private readonly ATM.Backend.Api.Repositories.ClientDao _clientDao;
+    private readonly ClientDao _clientDao;
     private readonly CreateAccountService _createAccountService;
+    
+    public ClientController(AppDbContext context)
+    {
+        _clientDao = new ClientDao(context);
+        _createAccountService = new CreateAccountService(context);
+    }
     
     
     // Retorna lista de todos Clients -- multibanco/client

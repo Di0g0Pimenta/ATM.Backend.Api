@@ -16,7 +16,6 @@ public class ClientDao : GenericDao<Client>
     /// <returns>True se o username já existe, False caso contrário</returns>
     public bool UsernameExists(string username)
     {
-        return _context.Set<Client>()
-            .Any(c => c.Username.ToLower() == username.ToLower());
+        return _context.Clients.Any(c => c.Username == username);
     }
 }

@@ -11,6 +11,11 @@ public class CardDao : GenericDao<Card>
         
     }
 
+    public bool CardNumberExists(string cardNum)
+    {
+        return _context.Cards.Any(c => c.Number == cardNum);
+    }
+    
     public new Card GetById(int id)
     {
         return _context.Cards

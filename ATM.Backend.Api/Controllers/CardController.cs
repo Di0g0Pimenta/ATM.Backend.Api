@@ -36,14 +36,14 @@ public class CardController : ControllerBase
     return card;
   }
 
-  [HttpGet("/multibanco/card/listAccountCards/{accountId}")]
+  [HttpGet("/listAccountCards/{accountId}")]
   public async Task<ActionResult<IEnumerable<Card>>> getAllCardsByAccountId(int accountId)
   {
     return _cardDao.ListAll(accountId);
   }
   
   
-  [HttpPost("add/{accountId}/{bankId}")]
+  [HttpPost("add/")]
   public async Task<ActionResult<Card>> addCard(NewCardDto newCardDto)
   {
     _addCardService.AddCard(newCardDto.bankId, newCardDto.accountId, newCardDto.cardNumber);

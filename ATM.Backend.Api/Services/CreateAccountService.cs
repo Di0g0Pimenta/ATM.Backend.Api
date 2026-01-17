@@ -11,13 +11,16 @@ public class CreateAccountService
     private readonly AccountDao _accountDao;
     private readonly CardDao _cardDao;
     private readonly BankDao _bankDao;
+    private readonly AddCardService _addCardService;
     
-    public CreateAccountService(ClientDao clientDao, AccountDao accountDao, CardDao cardDao, BankDao bankDao)
+    public CreateAccountService(AppDbContext context)
     {
-        _clientDao = clientDao;
-        _accountDao = accountDao;
-        _cardDao = cardDao;
-        _bankDao = bankDao;
+        _clientDao = new ClientDao(context);
+        _accountDao = new AccountDao(context);
+        _cardDao = new CardDao(context);
+        _bankDao = new BankDao(context);
+        _addCardService = new AddCardService(context);
+        
     }
     
     
@@ -26,6 +29,10 @@ public class CreateAccountService
         // Verificar se o username já existe
         if (_clientDao.UsernameExists(clientDto.Username))
             throw new InvalidOperationException($"Username '{clientDto.Username}' is already in use.");
+        
+        if (_cardDao.CardNumberExists(clientDto.cardNumber))
+            throw new InvalidOperationException($"Card '{clientDto.cardNumber}' is already in use.");
+
         
         Client client = new Client();
         client.Username = clientDto.Username;
@@ -45,8 +52,9 @@ public class CreateAccountService
         if (bank == null)
             throw new KeyNotFoundException($"Bank with ID {clientDto.BankId} not found.");
         
-        Card card = new Card(bank, account, clientDto.cardNumber);
-        _cardDao.Create(card);
+        
+        _addCardService.AddCard(bank.Id, account.Id, clientDto.cardNumber);
+        
     }
     
 }
