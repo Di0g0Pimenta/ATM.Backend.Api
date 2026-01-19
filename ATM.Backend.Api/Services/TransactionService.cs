@@ -13,6 +13,19 @@ public class TransactionService
 
     private readonly AppDbContext _context;
 
+    private static readonly Dictionary<(int Entity, string Reference), string> _servicesCatalog = new()
+    {
+        { (10001, "0000000001"), "Electricity Bill" },
+        { (10002, "0000000002"), "Water Bill" },
+        { (10003, "0000000003"), "Internet Bill" },
+        { (10004, "0000000004"), "Phone Bill" },
+        { (10005, "0000000005"), "Gas Bill" },
+        { (10006, "0000000006"), "Insurance Payment" },
+        { (10007, "0000000007"), "TV Subscription" },
+        { (10008, "0000000008"), "Other Service" }
+    };
+
+
     public TransactionService(AppDbContext context, CardDao cardDao, TransactionDao transactionDao, AccountDao accountDao)
     {
         _context = context;
@@ -61,8 +74,24 @@ public class TransactionService
 
         transaction.Type = "Withdraw";
         transaction.DestinyCard = null;
-        transaction.Description = "ATM Withdraw";
-        
+
+        // Novo: Se Entity e Reference forem fornecidos, é um pagamento de serviço
+        if (transactionDto.Entity > 0 && !string.IsNullOrEmpty(transactionDto.Reference))
+        {
+            if (_servicesCatalog.TryGetValue((transactionDto.Entity, transactionDto.Reference), out var serviceName))
+            {
+                transaction.Description = serviceName;  // Ex.: "Electricity Bill"
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Service with Entity {transactionDto.Entity} and Reference {transactionDto.Reference} not found.");
+            }
+        }
+        else
+        {
+            transaction.Description = "ATM Withdraw";  // Descrição padrão
+        }
+
         Card card = _cardDao.GetById(transactionDto.scrId);
 
         if (card == null)
@@ -73,15 +102,15 @@ public class TransactionService
 
         if (card.Account.TotalBalance < transactionDto.amount)
             throw new InvalidOperationException("Insufficient funds.");
-        
+
         card.Account.TotalBalance -= transactionDto.amount;
         transaction.SorceCard = card;
         card.Withdraw(transaction.Amount);
-        
+
         _accountDao.Update(card.Account);
         _cardDao.Update(card);
         _transactionDao.Create(transaction);
-        
+
         return transaction;
     }
 
