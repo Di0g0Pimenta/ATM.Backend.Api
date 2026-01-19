@@ -75,35 +75,416 @@ docker-compose up --build -d
 
 ## 📚 Documentação da API
 
-A API segue o padrão RESTful e responde em JSON. Abaixo estão os detalhes dos principais endpoints.
+A API segue o padrão RESTful e responde em JSON. Todos os endpoints protegidos (🔒) requerem autenticação via JWT.
 
-#### 🔐 Autenticação (`/multibanco/auth`)
-| Método | Endpoint | Descrição | Request Body |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/login` | Autentica o utilizador e retorna um Token JWT. | `{ "username": "...", "password": "..." }` |
+> ⚠️ **Autenticação:** Para endpoints protegidos (🔒), inclua o cabeçalho: `Authorization: Bearer <seu_token>`
 
-#### 👤 Clientes (`/multibanco/client`)
-| Método | Endpoint | Auth | Descrição |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/` | ❌ | **Registo**. Cria um novo cliente. Body: `{ "username": "...", "password": "..." }` |
-| `GET` | `/` | ✅ | Lista todos os clientes. |
-| `GET` | `/{id}` | ✅ | Obtém detalhes de um cliente específico. |
-| `PUT` | `/{id}` | ✅ | Atualiza os dados de um cliente. |
-| `DELETE` | `/{id}` | ✅ | Remove um cliente do sistema. |
+---
 
-#### 💳 Cartões (`/multibanco/card`)
-| Método | Endpoint | Auth | Descrição |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/{id}` | ✅ | Obtém detalhes de um cartão (inclui saldo). |
-| `POST` | `/add/{accountId}/{bankId}` | ✅ | Cria um novo cartão associado a uma conta e banco. |
-| `GET` | `/listAccountCards/{accountId}` | ✅ | Lista todos os cartões de uma conta. |
+### 🔐 Autenticação
 
-#### 💰 Transações (`/multibanco/transaction`)
-| Método | Endpoint | Auth | Descrição | Request Body (Exemplo) |
-| :--- | :--- | :--- | :--- | :--- |
-| `PUT` | `/` | ✅ | Executa Depósito, Levantamento ou Transferência. | `{ "scrId": 1, "dstCardNumber": "", "amount": 50 }` |
+#### `POST /multibanco/auth/login`
+Autentica o utilizador e retorna um Token JWT válido por 24 horas.
 
-> ⚠️ **Nota Importante:** Para endpoints protegidos (✅), deve enviar o cabeçalho: `Authorization: Bearer <seu_token>`.
+**Request Body:**
+```json
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "client": {
+    "id": 1,
+    "username": "admin"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Errors:**
+- `404 Not Found` - Utilizador ou senha inválidos
+
+---
+
+### 👤 Clientes (`/multibanco/client`)
+
+#### `POST /multibanco/client` (Registo)
+Cria um novo cliente com conta e cartão associados.
+
+**Request Body:**
+```json
+{
+  "username": "joao_silva",
+  "password": "senha_segura123",
+  "bankId": 1,
+  "cardNumber": "123456789012"
+}
+```
+
+**Validações:**
+- `username`: 3-50 caracteres, deve ser único
+- `password`: 4-100 caracteres (será encriptada com BCrypt)
+- `bankId`: ID válido de banco existente
+- `cardNumber`: Exatamente 12 dígitos
+
+**Response:** `201 Created`
+
+---
+
+#### `GET /multibanco/client` 🔒
+Lista todos os clientes registados.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "$2a$11$..." // Hash BCrypt
+  }
+]
+```
+
+---
+
+#### `GET /multibanco/client/{id}` 🔒
+Obtém detalhes de um cliente específico.
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "username": "admin",
+  "password": "$2a$11$..."
+}
+```
+
+**Errors:**
+- `404 Not Found` - Cliente não encontrado
+
+---
+
+#### `PUT /multibanco/client/{id}` 🔒
+Atualiza os dados de um cliente.
+
+**Request Body:**
+```json
+{
+  "id": 1,
+  "username": "novo_username",
+  "password": "$2a$11$..." // Hash BCrypt
+}
+```
+
+**Response:** `204 No Content`
+
+**Errors:**
+- `400 Bad Request` - ID no URL não corresponde ao body
+- `404 Not Found` - Cliente não encontrado
+
+---
+
+#### `DELETE /multibanco/client/{id}` 🔒
+Remove um cliente do sistema.
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "username": "admin",
+  "password": "$2a$11$..."
+}
+```
+
+**Errors:**
+- `404 Not Found` - Cliente não encontrado
+
+---
+
+### 💳 Cartões (`/multibanco/card`)
+
+#### `GET /multibanco/card/{id}` 🔒
+Obtém detalhes de um cartão, incluindo saldo.
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "cardNumber": "123456789012",
+  "balance": 1000.50,
+  "accountId": 1,
+  "bankId": 1
+}
+```
+
+**Errors:**
+- `404 Not Found` - Cartão não encontrado
+
+---
+
+#### `POST /multibanco/card/add` 🔒
+Cria um novo cartão associado a uma conta e banco.
+
+**Request Body:**
+```json
+{
+  "bankId": 1,
+  "accountId": 1,
+  "cardNumber": "987654321098"
+}
+```
+
+**Validações:**
+- `cardNumber`: Exatamente 12 dígitos, deve ser único
+- `bankId` e `accountId`: Devem existir na base de dados
+
+**Response:** `201 Created`
+
+---
+
+#### `GET /listAccountCards/{accountId}` 🔒
+Lista todos os cartões associados a uma conta.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "cardNumber": "123456789012",
+    "balance": 1000.50,
+    "accountId": 1,
+    "bankId": 1
+  },
+  {
+    "id": 2,
+    "cardNumber": "987654321098",
+    "balance": 500.00,
+    "accountId": 1,
+    "bankId": 2
+  }
+]
+```
+
+---
+
+### 💰 Transações (`/multibanco/transaction`)
+
+O endpoint de transações é **polimórfico** e suporta 4 tipos de operações diferentes, determinadas pelos campos enviados no request body.
+
+#### `PUT /multibanco/transaction` 🔒
+Executa operações bancárias: **Depósito**, **Levantamento**, **Transferência** ou **Pagamento de Serviços**.
+
+---
+
+#### 📥 **Operação 1: Depósito (Deposit)**
+Deposita dinheiro numa conta através do número do cartão.
+
+**Request Body:**
+```json
+{
+  "scrId": -1,
+  "dstCardNumber": "123456789012",
+  "amount": 100.00
+}
+```
+
+**Lógica de Identificação:**
+- `scrId` = `-1` → Indica depósito
+- `dstCardNumber` → Cartão de destino (obrigatório)
+- `amount` → Valor a depositar (0.01 - 1,000,000)
+
+**Response:** `204 No Content`
+
+**Efeito:** Aumenta o saldo da conta associada ao cartão de destino.
+
+---
+
+#### 📤 **Operação 2: Levantamento (Withdraw)**
+Levanta dinheiro de um cartão (ATM Withdraw).
+
+**Request Body:**
+```json
+{
+  "scrId": 1,
+  "dstCardNumber": "",
+  "amount": 50.00
+}
+```
+
+**Lógica de Identificação:**
+- `scrId` → ID do cartão de origem (obrigatório, > 0)
+- `dstCardNumber` → Vazio ou null
+- `amount` → Valor a levantar
+
+**Validações:**
+- Saldo suficiente na conta
+- Valor positivo
+
+**Response:** `204 No Content`
+
+**Efeito:** Diminui o saldo da conta associada ao cartão de origem.
+
+---
+
+#### 🔄 **Operação 3: Transferência (Transfer)**
+Transfere dinheiro entre dois cartões/contas.
+
+**Request Body:**
+```json
+{
+  "scrId": 1,
+  "dstCardNumber": "987654321098",
+  "amount": 200.00
+}
+```
+
+**Lógica de Identificação:**
+- `scrId` → ID do cartão de origem (obrigatório, > 0)
+- `dstCardNumber` → Número do cartão de destino (obrigatório, não vazio)
+- `amount` → Valor a transferir
+
+**Validações:**
+- Saldo suficiente no cartão de origem
+- Ambos os cartões devem existir
+- Valor positivo
+
+**Response:** `204 No Content`
+
+**Efeito:** 
+- Diminui saldo da conta de origem
+- Aumenta saldo da conta de destino
+- Operação **atómica** (rollback automático em caso de erro)
+
+---
+
+#### 💡 **Operação 4: Pagamento de Serviços (Service Payment)**
+Paga serviços (água, luz, internet, etc.) usando Entidade + Referência.
+
+**Request Body:**
+```json
+{
+  "scrId": 1,
+  "dstCardNumber": "",
+  "amount": 75.50,
+  "entity": 10001,
+  "reference": "0000000001"
+}
+```
+
+**Lógica de Identificação:**
+- `scrId` → ID do cartão de origem (obrigatório, > 0)
+- `dstCardNumber` → Vazio ou null
+- `entity` → Código da entidade (ex: 10001 = Eletricidade)
+- `reference` → Referência do serviço (10 dígitos)
+- `amount` → Valor a pagar
+
+**Serviços Disponíveis:**
+| Entity | Reference    | Serviço              |
+|--------|--------------|----------------------|
+| 10001  | 0000000001   | Electricity Bill     |
+| 10002  | 0000000002   | Water Bill           |
+| 10003  | 0000000003   | Internet Bill        |
+| 10004  | 0000000004   | Phone Bill           |
+| 10005  | 0000000005   | Gas Bill             |
+| 10006  | 0000000006   | Insurance Payment    |
+| 10007  | 0000000007   | TV Subscription      |
+| 10008  | 0000000008   | Other Service        |
+
+**Validações:**
+- Entidade + Referência devem existir no catálogo
+- Saldo suficiente
+- Valor positivo
+
+**Response:** `204 No Content`
+
+**Efeito:** Diminui saldo da conta e regista transação com descrição do serviço.
+
+---
+
+#### `GET /multibanco/transaction` 🔒
+Lista todas as transações registadas no sistema.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "type": "Transfer",
+    "description": "Account Transfer",
+    "amount": 200.00,
+    "sorceCardId": 1,
+    "destinyCardId": 2,
+    "timestamp": "2026-01-19T18:30:00Z"
+  },
+  {
+    "id": 2,
+    "type": "Withdraw",
+    "description": "Electricity Bill",
+    "amount": 75.50,
+    "sorceCardId": 1,
+    "destinyCardId": null,
+    "timestamp": "2026-01-19T18:35:00Z"
+  }
+]
+```
+
+---
+
+### 🏦 Bancos (`/api/bank`)
+
+#### `GET /api/bank`
+Lista todos os bancos disponíveis no sistema.
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "name": "Banco Português",
+    "code": "0001"
+  },
+  {
+    "id": 2,
+    "name": "Caixa Geral",
+    "code": "0002"
+  }
+]
+```
+
+---
+
+### ⚠️ Tratamento de Erros
+
+Todos os endpoints utilizam **Global Exception Middleware** para tratamento consistente de erros:
+
+**Exemplo de Erro (400 Bad Request):**
+```json
+{
+  "message": "Insufficient funds.",
+  "timestamp": "2026-01-19T18:40:00Z"
+}
+```
+
+**Exemplo de Erro (404 Not Found):**
+```json
+{
+  "message": "Source card with ID 999 not found.",
+  "timestamp": "2026-01-19T18:40:00Z"
+}
+```
+
+**Códigos de Status Comuns:**
+- `200 OK` - Operação bem-sucedida (com body)
+- `201 Created` - Recurso criado com sucesso
+- `204 No Content` - Operação bem-sucedida (sem body)
+- `400 Bad Request` - Validação falhou ou dados inválidos
+- `401 Unauthorized` - Token JWT ausente ou inválido
+- `404 Not Found` - Recurso não encontrado
+- `500 Internal Server Error` - Erro interno do servidor
 
 ---
 
