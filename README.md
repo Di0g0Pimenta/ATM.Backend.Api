@@ -263,20 +263,19 @@ Obtém detalhes de um cartão, incluindo saldo.
 ---
 
 #### `POST /multibanco/card/add` 🔒
-Cria um novo cartão associado a uma conta e banco.
+Cria um novo cartão associado à conta do utilizador autenticado e a um banco.
 
 **Request Body:**
 ```json
 {
   "bankId": 1,
-  "accountId": 1,
   "cardNumber": "987654321098"
 }
 ```
 
 **Validações:**
 - `cardNumber`: Exatamente 12 dígitos, deve ser único
-- `bankId` e `accountId`: Devem existir na base de dados
+- `bankId`: Deve existir na base de dados
 
 **Response:** `201 Created`
 

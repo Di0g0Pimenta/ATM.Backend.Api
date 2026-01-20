@@ -56,7 +56,13 @@ public class CardController : ControllerBase
   [HttpPost("add/")]
   public async Task<ActionResult<Card>> addCard(NewCardDto newCardDto)
   {
-    _addCardService.AddCard(newCardDto.bankId, newCardDto.accountId, newCardDto.cardNumber);
+    var accountIdClaim = User.FindFirst("AccountId")?.Value;
+    if (string.IsNullOrEmpty(accountIdClaim))
+        return Unauthorized();
+
+    int accountId = int.Parse(accountIdClaim);
+
+    _addCardService.AddCard(newCardDto.bankId, accountId, newCardDto.cardNumber);
     
     return Created();
   }

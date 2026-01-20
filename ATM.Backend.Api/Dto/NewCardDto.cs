@@ -7,8 +7,7 @@ public class NewCardDto
     [Required]
     public int bankId { get; set; }
     
-    [Required]
-    public int accountId { get; set; }
+
     
     [Required]
     [StringLength(12,  MinimumLength = 12)]
