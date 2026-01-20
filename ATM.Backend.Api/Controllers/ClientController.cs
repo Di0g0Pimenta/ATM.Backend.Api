@@ -89,4 +89,66 @@ public class ClientController : ControllerBase
         
         return client;
     }
+    
+    /// <summary>
+    /// Upload ou atualiza a imagem de perfil de um cliente.
+    /// </summary>
+    /// <param name="id">ID do cliente</param>
+    /// <param name="imageDto">DTO contendo a imagem em Base64</param>
+    /// <returns>200 OK se sucesso, 400 se validação falhar, 404 se cliente não existir</returns>
+    [HttpPost("{id}/image")]
+    public async Task<ActionResult> UpdateClientImage(int id, [FromBody] UpdateClientImageDto imageDto)
+    {
+        // Valida o DTO
+        if (!imageDto.IsValid(out string errorMessage))
+        {
+            return BadRequest(new { error = errorMessage });
+        }
+        
+        // Atualiza a imagem
+        bool success = _clientDao.UpdateProfileImage(id, imageDto.ProfileImage);
+        
+        if (!success)
+        {
+            return NotFound(new { error = "Client not found." });
+        }
+        
+        return Ok(new { message = "Profile image updated successfully." });
+    }
+    
+    /// <summary>
+    /// Obtém a imagem de perfil de um cliente.
+    /// </summary>
+    /// <param name="id">ID do cliente</param>
+    /// <returns>200 OK com imagem em Base64, 404 se cliente não existir ou não tiver imagem</returns>
+    [HttpGet("{id}/image")]
+    public async Task<ActionResult> GetClientImage(int id)
+    {
+        string? profileImage = _clientDao.GetProfileImage(id);
+        
+        if (profileImage == null)
+        {
+            return NotFound(new { error = "Client not found or no profile image set." });
+        }
+        
+        return Ok(new { profileImage });
+    }
+    
+    /// <summary>
+    /// Remove a imagem de perfil de um cliente.
+    /// </summary>
+    /// <param name="id">ID do cliente</param>
+    /// <returns>204 No Content se sucesso, 404 se cliente não existir</returns>
+    [HttpDelete("{id}/image")]
+    public async Task<ActionResult> DeleteClientImage(int id)
+    {
+        bool success = _clientDao.DeleteProfileImage(id);
+        
+        if (!success)
+        {
+            return NotFound(new { error = "Client not found." });
+        }
+        
+        return NoContent();
+    }
 }

@@ -19,4 +19,7 @@ public class NewClientDto
     [Required]
     [StringLength(12, MinimumLength = 12)]
     public string cardNumber {get; set; }
+    
+    // Opcional: imagem de perfil em Base64
+    public string? ProfileImage { get; set; }
 }

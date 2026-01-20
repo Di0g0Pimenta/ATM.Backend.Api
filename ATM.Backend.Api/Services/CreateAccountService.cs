@@ -37,6 +37,7 @@ public class CreateAccountService
         Client client = new Client();
         client.Username = clientDto.Username;
         client.Password = BCrypt.Net.BCrypt.HashPassword(clientDto.Password);
+        client.ProfileImage = clientDto.ProfileImage; // Opcional
         _clientDao.Create(client);
         
         Account account = new Account();
