@@ -35,7 +35,8 @@ graph TD
 
 *   **🔐 Autenticação Segura:** Sistema de Login via JWT (JSON Web Tokens) com **Hashing de senhas via BCrypt**.
 *   **💳 Gestão de Cartões:** Criação, associação a contas e validação de propriedade.
-*   **💰 Operações Bancárias:**
+*   **� Imagem de Perfil:** Armazenamento e gestão de imagens de perfil (Base64).
+*   **�💰 Operações Bancárias:**
     *   **Consultar Saldo:** Visualização em tempo real.
     *   **Levantamentos & Depósitos:** Com validação estrita de fundos e valores.
     *   **Transferências:** Movimentação entre contas segura e atómica.
@@ -121,7 +122,8 @@ Cria um novo cliente com conta e cartão associados.
   "username": "joao_silva",
   "password": "senha_segura123",
   "bankId": 1,
-  "cardNumber": "123456789012"
+  "cardNumber": "123456789012",
+  "profileImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" // Opcional
 }
 ```
 
@@ -159,7 +161,8 @@ Obtém detalhes de um cliente específico.
 {
   "id": 1,
   "username": "admin",
-  "password": "$2a$11$..."
+  "password": "$2a$11$...",
+  "profileImage": "data:image/png;base64,iVBORw0KG..."
 }
 ```
 
@@ -205,7 +208,40 @@ Remove um cliente do sistema.
 
 ---
 
-### 💳 Cartões (`/multibanco/card`)
+#### `POST /multibanco/client/{id}/image` �
+Atualiza a imagem de perfil do cliente.
+
+**Request Body:**
+```json
+{
+  "profileImage": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+}
+```
+
+**Response:** `200 OK`
+
+---
+
+#### `GET /multibanco/client/{id}/image` 🔒
+Obtém a imagem de perfil do cliente.
+
+**Response (200 OK):**
+```json
+{
+  "profileImage": "data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+}
+```
+
+---
+
+#### `DELETE /multibanco/client/{id}/image` 🔒
+Remove a imagem de perfil do cliente.
+
+**Response:** `204 No Content`
+
+---
+
+### �💳 Cartões (`/multibanco/card`)
 
 #### `GET /multibanco/card/{id}` 🔒
 Obtém detalhes de um cartão, incluindo saldo.
@@ -246,8 +282,8 @@ Cria um novo cartão associado a uma conta e banco.
 
 ---
 
-#### `GET /listAccountCards/{accountId}` 🔒
-Lista todos os cartões associados a uma conta.
+#### `GET /listAccountCards` 🔒
+Lista todos os cartões associados à conta do utilizador autenticado.
 
 **Response (200 OK):**
 ```json
@@ -504,6 +540,7 @@ Todos os endpoints utilizam **Global Exception Middleware** para tratamento cons
 ### 3. Segurança & Qualidade
 - [x] **JWT Auth**: Proteção total de endpoints sensíveis.
 - [x] **Segurança de Dados**: Hashing de senhas utilizando BCrypt.Net.
+- [x] **Gestão de Perfil**: Upload e armazenamento de imagens de perfil.
 
 - [x] **Dockerização**: Ambiente isolado e reprodutível.
 
