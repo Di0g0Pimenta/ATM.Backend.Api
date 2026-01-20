@@ -11,7 +11,7 @@ namespace ATM.Backend.Api.Services
     /// </summary>
     public interface ITokenService
     {
-        string GenerateToken(Client client);
+        string GenerateToken(Client client, int accountId);
     }
 
     /// <summary>
@@ -31,20 +31,20 @@ namespace ATM.Backend.Api.Services
         /// </summary>
         /// <param name="client">O cliente para o qual o token será gerado.</param>
         /// <returns>Uma string contendo o token JWT.</returns>
-        public string GenerateToken(Client client)
+        public string GenerateToken(Client client, int accountId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]); // Obtém a chave secreta da configuração
-            
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // Define as informações contidas no token (Claims)
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Email, client.Username),
-                    new Claim(ClaimTypes.NameIdentifier, client.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
+                    new Claim("AccountId", accountId.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(2), // Token expira em 2 horas
+                Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _config["Jwt:Issuer"],
                 Audience = _config["Jwt:Audience"]

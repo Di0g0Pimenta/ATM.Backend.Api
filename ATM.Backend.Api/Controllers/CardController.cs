@@ -36,11 +36,21 @@ public class CardController : ControllerBase
     return card;
   }
 
-  [HttpGet("/listAccountCards/{accountId}")]
-  public async Task<ActionResult<IEnumerable<Card>>> getAllCardsByAccountId(int accountId)
+  [HttpGet("/listAccountCards")]
+  [Authorize]
+  public async Task<ActionResult<IEnumerable<Card>>> GetMyCards()
   {
-    return _cardDao.ListAll(accountId);
+    // Pegar o accountId do token
+    var accountIdClaim = User.FindFirst("AccountId")?.Value;
+    if (string.IsNullOrEmpty(accountIdClaim))
+        return Unauthorized();
+
+    int accountId = int.Parse(accountIdClaim);
+
+    var cards = _cardDao.ListAll(accountId);
+    return Ok(cards);
   }
+
   
   
   [HttpPost("add/")]

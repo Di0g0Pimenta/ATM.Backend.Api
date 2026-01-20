@@ -44,28 +44,19 @@ namespace ATM.Backend.Api.Controllers.Rest
                 return NotFound(new { message = "Usuário ou senha inválidos" });
             }
 
-            // Procurar a conta associada ao cliente
-            var account = _accountDao
-                .ListAll()
-                .FirstOrDefault(a => a.Client.Id == client.Id);
+            // Obter a conta do cliente
+            var account = _accountDao.ListAll().FirstOrDefault(a => a.Client.Id == client.Id);
 
             if (account == null)
-            {
-                return NotFound(new { message = "Conta não encontrada para este cliente" });
-            }
+                return NotFound(new { message = "Conta não encontrada" });
 
-            // Gerar token JWT
-            var token = _tokenService.GenerateToken(client);
+            // Gerar token incluindo accountId
+            var token = _tokenService.GenerateToken(client, account.Id);
 
             // Retorno com accountId incluído
             return Ok(new
             {
-                client = new
-                {
-                    id = client.Id,
-                    username = client.Username,
-                    accountId = account.Id
-                },
+                client = new { id = client.Id, username = client.Username },
                 token = token
             });
         }
