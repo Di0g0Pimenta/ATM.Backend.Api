@@ -151,4 +151,36 @@ public class ClientController : ControllerBase
         
         return NoContent();
     }
+
+    /// <summary>
+    /// Atualiza a password de um cliente.
+    /// </summary>
+    /// <param name="id">ID do cliente</param>
+    /// <param name="dto">Nova password</param>
+    /// <returns>204 No Content se sucesso</returns>
+    [HttpPut("{id}/password")]
+    public async Task<IActionResult> UpdatePassword(int id, UpdatePasswordDto dto)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim))
+            return Unauthorized();
+
+        int userId = int.Parse(userIdClaim);
+
+        // Impede mudar password de outro utilizador
+        if (userId != id)
+            return Forbid();
+
+        var client = _clientDao.GetById(id);
+
+        if (client == null)
+            return NotFound(new { error = "Client not found." });
+
+        client.Password = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+        _clientDao.Update(client);
+
+        return NoContent();
+    }
+
 }
