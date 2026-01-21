@@ -24,9 +24,15 @@ public class TransactionController : ControllerBase
 
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transaction>>> GetAllTransaction()
+    public async Task<ActionResult<IEnumerable<Transaction>>> GetAllTransactionByClient()
     {
-        return _transactionDao.ListAll();
+        var accountIdClaim = User.FindFirst("AccountId")?.Value;
+        if (string.IsNullOrEmpty(accountIdClaim))
+            return Unauthorized();
+
+        int accountId = int.Parse(accountIdClaim);
+        
+        return _transactionDao.ListTransactionByAccountId(accountId);
     }
     
     
