@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ATM.Backend.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260111122152_MultibancoMigration")]
-    partial class MultibancoMigration
+    [Migration("20260121050955_MultibancoMigrations")]
+    partial class MultibancoMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,6 +97,30 @@ namespace ATM.Backend.Api.Migrations
                     b.ToTable("Cards");
                 });
 
+            modelBuilder.Entity("ATM.Backend.Api.Models.CardHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardId");
+
+                    b.ToTable("CardHistory");
+                });
+
             modelBuilder.Entity("ATM.Backend.Api.Models.Client", b =>
                 {
                     b.Property<int>("Id")
@@ -107,6 +131,9 @@ namespace ATM.Backend.Api.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -211,6 +238,17 @@ namespace ATM.Backend.Api.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Bank");
+                });
+
+            modelBuilder.Entity("ATM.Backend.Api.Models.CardHistory", b =>
+                {
+                    b.HasOne("ATM.Backend.Api.Models.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
                 });
 
             modelBuilder.Entity("ATM.Backend.Api.Models.Services", b =>

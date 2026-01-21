@@ -10,6 +10,7 @@ public class TransactionService
     private readonly CardDao _cardDao;
     private readonly TransactionDao _transactionDao;
     private readonly AccountDao _accountDao;
+    private readonly CardHistoryDao _cardHistoryDao;
 
     private readonly AppDbContext _context;
 
@@ -26,12 +27,13 @@ public class TransactionService
     };
 
 
-    public TransactionService(AppDbContext context, CardDao cardDao, TransactionDao transactionDao, AccountDao accountDao)
+    public TransactionService(AppDbContext context, CardDao cardDao, TransactionDao transactionDao, AccountDao accountDao, CardHistoryDao cardHistoryDao)
     {
         _context = context;
         _cardDao = cardDao;
         _transactionDao = transactionDao;
         _accountDao = accountDao;
+        _cardHistoryDao = cardHistoryDao;
     }
     
     public Transaction transactionOperation(TransactionDto transactionDto)
@@ -102,7 +104,7 @@ public class TransactionService
 
         if (card.Account.TotalBalance < transactionDto.amount)
             throw new InvalidOperationException("Insufficient funds.");
-
+        
         card.Account.TotalBalance -= transactionDto.amount;
         transaction.SorceCard = card;
         card.Withdraw(transaction.Amount);
@@ -110,6 +112,12 @@ public class TransactionService
         _accountDao.Update(card.Account);
         _cardDao.Update(card);
         _transactionDao.Create(transaction);
+        
+        CardHistory cardHistory = new CardHistory();
+        cardHistory.Amount = card.Balance;
+        cardHistory.Card = card;
+        
+        _cardHistoryDao.Create(cardHistory);
 
         return transaction;
     }
@@ -138,6 +146,12 @@ public class TransactionService
         _accountDao.Update(card.Account);
         _cardDao.Update(card);
         _transactionDao.Create(transaction);
+        
+        CardHistory cardHistory = new CardHistory();
+        cardHistory.Amount = card.Balance;
+        cardHistory.Card = card;
+        
+        _cardHistoryDao.Create(cardHistory);
         
         return transaction;
     }
@@ -182,6 +196,18 @@ public class TransactionService
         _cardDao.Update(dstCard);
         _cardDao.Update(srcCard);
         _transactionDao.Create(transaction);
+        
+        CardHistory srcCardHistory = new CardHistory();
+        srcCardHistory.Amount = srcCard.Balance;
+        srcCardHistory.Card = srcCard;
+        
+        _cardHistoryDao.Create(srcCardHistory);
+        
+        CardHistory dstCardHistory = new CardHistory();
+        dstCardHistory.Amount = dstCard.Balance;
+        dstCardHistory.Card = dstCard;
+        
+        _cardHistoryDao.Create(dstCardHistory);
         
         return transaction;
     }

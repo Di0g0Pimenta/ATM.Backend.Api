@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ATM.Backend.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MultibancoMigration : Migration
+    public partial class MultibancoMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,8 @@ namespace ATM.Backend.Api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,6 +84,27 @@ namespace ATM.Backend.Api.Migrations
                         name: "FK_Cards_Banks_BankId",
                         column: x => x.BankId,
                         principalTable: "Banks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CardId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CardHistory_Cards_CardId",
+                        column: x => x.CardId,
+                        principalTable: "Cards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -143,6 +165,11 @@ namespace ATM.Backend.Api.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CardHistory_CardId",
+                table: "CardHistory",
+                column: "CardId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cards_AccountId",
                 table: "Cards",
                 column: "AccountId");
@@ -171,6 +198,9 @@ namespace ATM.Backend.Api.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CardHistory");
+
             migrationBuilder.DropTable(
                 name: "Services");
 

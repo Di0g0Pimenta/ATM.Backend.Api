@@ -14,6 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+
 builder.Services.AddControllers();
 
 // JWT Authentication Configuration
@@ -48,6 +49,7 @@ builder.Services.AddScoped<ATM.Backend.Api.Repositories.CardDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.AccountDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.ClientDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.BankDao>();
+builder.Services.AddScoped<ATM.Backend.Api.Repositories.CardHistoryDao>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

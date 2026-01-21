@@ -17,4 +17,5 @@ public class AppDbContext : DbContext
     public DbSet<Bank> Banks { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Services> Services { get; set; }
+    public DbSet<CardHistory> CardHistory { get; set; }
 }

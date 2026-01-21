@@ -60,34 +60,49 @@ public class ClientController : ControllerBase
     }
     
     // Atualiza um Client -- multibanco/client/{id}
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Client>> UpdateClient(int id, Client client)
+    [HttpPut()]
+    public async Task<ActionResult<Client>> UpdateClient(UpdateClientDto updateClientDto)
     {
-        if (id != client.Id)
+        var clientIdClaim = User.FindFirst("AccountId")?.Value;
+        if (string.IsNullOrEmpty(clientIdClaim))
+            return Unauthorized();
+
+        int clientId = int.Parse(clientIdClaim);
+        
+        Client client = _clientDao.GetById(clientId);
+
+        if (BCrypt.Net.BCrypt.Verify(updateClientDto.Password, client.Password))
         {
-            return BadRequest();
+            client.Password = updateClientDto.NewPassword;
+            _clientDao.Update(client);
+            return NoContent();
+            
         }
         
-        if (_clientDao.Update(client) == null)
-        {
-            return NotFound();
-        }
-        
-        return NoContent();
+        return BadRequest(new { error = "Passwords do not match." });
     }
     
     // Deleta um Client por id, retorna 404 se nao achar -- multibanco/client/{id}
     [HttpDelete]
-    public async Task<ActionResult<Client>> DeleteClient(int id)
+    public async Task<ActionResult> DeleteClient(UpdateClientDto updateClientDto)
     {
-        Client client = _clientDao.Delete(id);
+        var clientIdClaim = User.FindFirst("AccountId")?.Value;
+        if (string.IsNullOrEmpty(clientIdClaim))
+            return Unauthorized();
+        
+        int clientId = int.Parse(clientIdClaim);
+        
+        Client client = _clientDao.GetById(clientId);
 
-        if (client == null)
+        if (BCrypt.Net.BCrypt.Verify(updateClientDto.Password, client.Password))
         {
-            return NotFound();
+            client.Password = updateClientDto.NewPassword;
+            _clientDao.Delete(client.Id);
+            return NoContent();
+            
         }
         
-        return client;
+        return BadRequest(new { error = "Passwords do not match." });
     }
     
     /// <summary>
