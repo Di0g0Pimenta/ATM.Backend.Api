@@ -19,11 +19,13 @@ public class ClientController : ControllerBase
 {
     private readonly ClientDao _clientDao;
     private readonly CreateAccountService _createAccountService;
+    private readonly DeleteAccountService _deleteAccountService;
     
-    public ClientController(AppDbContext context)
+    public ClientController(AppDbContext context, DeleteAccountService deleteAccountService)
     {
         _clientDao = new ClientDao(context);
         _createAccountService = new CreateAccountService(context);
+        _deleteAccountService = deleteAccountService;
     }
     
     
@@ -84,18 +86,17 @@ public class ClientController : ControllerBase
     
     // Deleta um Client por id, retorna 404 se nao achar -- multibanco/client/{id}
     [HttpDelete]
-    public async Task<ActionResult> DeleteClient()
+    [Authorize]
+    public IActionResult DeleteClient()
     {
-        var clientIdClaim = User.FindFirst("AccountId")?.Value;
-        if (string.IsNullOrEmpty(clientIdClaim))
+        var accountIdClaim = User.FindFirst("AccountId")?.Value;
+        if (string.IsNullOrEmpty(accountIdClaim))
             return Unauthorized();
-        
-        int clientId = int.Parse(clientIdClaim);
-        
-        Client client = _clientDao.GetById(clientId);
-        
-        _clientDao.Delete(client.Id);
-        
+
+        int accountId = int.Parse(accountIdClaim);
+
+        _deleteAccountService.DeleteAccount(accountId);
+
         return NoContent();
     }
     

@@ -50,6 +50,7 @@ builder.Services.AddScoped<ATM.Backend.Api.Repositories.AccountDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.ClientDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.BankDao>();
 builder.Services.AddScoped<ATM.Backend.Api.Repositories.CardHistoryDao>();
+builder.Services.AddScoped<DeleteAccountService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
