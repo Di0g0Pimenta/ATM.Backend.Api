@@ -73,7 +73,7 @@ public class ClientController : ControllerBase
 
         if (BCrypt.Net.BCrypt.Verify(updateClientDto.Password, client.Password))
         {
-            client.Password = updateClientDto.NewPassword;
+            client.Password = BCrypt.Net.BCrypt.HashPassword(updateClientDto.NewPassword);
             _clientDao.Update(client);
             return NoContent();
             
