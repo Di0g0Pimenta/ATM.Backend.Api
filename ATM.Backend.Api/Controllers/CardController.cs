@@ -66,4 +66,34 @@ public class CardController : ControllerBase
     
     return Created();
   }
+
+  [HttpDelete]
+  [Authorize]
+  public async Task<IActionResult> DeleteCard([FromBody] DeleteCardDto dto)
+  {
+      //AccountId vem do token
+      var accountIdClaim = User.FindFirst("AccountId")?.Value;
+      if (string.IsNullOrEmpty(accountIdClaim))
+          return Unauthorized();
+
+      int accountId = int.Parse(accountIdClaim);
+
+      //Buscar cartão pelo número
+      var card = _cardDao.GetByCardNum(dto.CardNumber);
+      if (card == null)
+          return NotFound(new { error = "Card not found." });
+
+      //Verificar se pertence à conta
+      if (card.Account == null || card.Account.Id != accountId)
+          return Forbid();
+
+      //Regra de negócio
+      if (card.Balance != 0)
+          return BadRequest(new { error = "Card balance must be zero to delete." });
+
+      //Apagar
+      _cardDao.Delete(card.Id);
+
+      return NoContent();
+  }
 }
