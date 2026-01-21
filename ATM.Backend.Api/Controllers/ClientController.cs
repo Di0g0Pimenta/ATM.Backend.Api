@@ -84,7 +84,7 @@ public class ClientController : ControllerBase
     
     // Deleta um Client por id, retorna 404 se nao achar -- multibanco/client/{id}
     [HttpDelete]
-    public async Task<ActionResult> DeleteClient(UpdateClientDto updateClientDto)
+    public async Task<ActionResult> DeleteClient()
     {
         var clientIdClaim = User.FindFirst("AccountId")?.Value;
         if (string.IsNullOrEmpty(clientIdClaim))
@@ -93,16 +93,10 @@ public class ClientController : ControllerBase
         int clientId = int.Parse(clientIdClaim);
         
         Client client = _clientDao.GetById(clientId);
-
-        if (BCrypt.Net.BCrypt.Verify(updateClientDto.Password, client.Password))
-        {
-            client.Password = updateClientDto.NewPassword;
-            _clientDao.Delete(client.Id);
-            return NoContent();
-            
-        }
         
-        return BadRequest(new { error = "Passwords do not match." });
+        _clientDao.Delete(client.Id);
+        
+        return NoContent();
     }
     
     /// <summary>
