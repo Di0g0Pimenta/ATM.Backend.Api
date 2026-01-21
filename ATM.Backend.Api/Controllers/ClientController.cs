@@ -35,18 +35,6 @@ namespace ATM.Backend.Api.Controllers.Rest
             return _clientDao.ListAll();
         }
 
-        // Retorna Client por id ou 404 se não achar -- multibanco/client/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
-        {
-            Client client = _clientDao.GetById(id);
-
-            if (client == null)
-                return NotFound(new { error = "Client not found." });
-
-            return client;
-        }
-
         // Cria um novo cliente -- multibanco/client
         [HttpPost]
         [AllowAnonymous]
